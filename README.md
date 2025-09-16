@@ -32,9 +32,9 @@ Este projeto foi construído utilizando as seguintes tecnologias e ferramentas:
 
 ---
 
-## 📈 Diagrama de Caso de Uso
+## 📈 Diagrama de Casos de Uso
 
-![Diagrama de Caso de Uso do Aplicativo]()
+<img src="assets/images/use-cases-diagram.png" alt="Diagrama de casos de uso">
 
 
 <!--
