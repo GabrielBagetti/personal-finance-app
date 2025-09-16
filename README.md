@@ -1,5 +1,43 @@
-# Welcome to your Expo app 👋
+# Bem-vindo ao SEU app de Finanças Pessoais! 
 
+## 📝 Descrição do Projeto
+
+Este projeto é um aplicativo móvel para controle de finanças pessoais, desenvolvido para ajudar usuários a gerenciar suas despesas e receitas. O aplicativo fornece uma visão clara do saldo atual, um histórico completo de transações e resumos mensais.
+
+O objetivo é oferecer uma ferramenta simples e eficiente para que o usuário tenha total controle sobre o seu dinheiro, com uma interface limpa e intuitiva.
+
+---
+
+## ✨ Funcionalidades
+
+O aplicativo possui as seguintes funcionalidades principais:
+
+* **Dashboard:** Uma tela inicial que exibe o saldo total e um resumo das últimas movimentações.
+* **Registro de Transações:** Uma interface para o usuário adicionar novas despesas e receitas, com campos para valor, descrição e categoria.
+* **Extrato:** Uma lista detalhada de todas as transações, permitindo ao usuário consultar o histórico financeiro completo.
+* **Resumo Mensal:** Uma tela que resume o fluxo de caixa do mês, mostrando o total de receitas e despesas.
+* **Categorias:** Gerenciamento de categorias para classificar as transações e facilitar a organização.
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+Este projeto foi construído utilizando as seguintes tecnologias e ferramentas:
+
+* **React Native:** Framework para o desenvolvimento do aplicativo móvel, garantindo compatibilidade com iOS e Android.
+* **Expo Router:** Sistema de roteamento nativo, que utiliza a estrutura de arquivos para gerenciar a navegação entre as telas.
+* **NativeWind:** Biblioteca que permite a estilização do aplicativo com a sintaxe do Tailwind CSS, agilizando o desenvolvimento visual.
+* **API REST:** O aplicativo é integrado a uma API REST para gerenciamento e persistência dos dados de finanças.
+* **Banco de Dados:** Utilização de um banco de dados para armazenar as informações das transações de forma segura e eficiente.
+
+---
+
+## 📈 Diagrama de Caso de Uso
+
+![Diagrama de Caso de Uso do Aplicativo]()
+
+
+<!--
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
 ## Get started
