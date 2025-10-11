@@ -1,8 +1,10 @@
 import React from 'react';
-import { View, Text, SectionList, StyleSheet, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
-import { TRANSACTIONS} from '../../data/mockData.js';
+
+import { View, Text, SectionList, StyleSheet, SafeAreaView, TouchableOpacity, Alert, Platform } from 'react-native';
+import { TRANSACTIONS } from '../../data/mockData.js';
 import { useTransactions } from '../../context/TransactionContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 
 const groupTransactionsByDate = (transactions: typeof TRANSACTIONS) => {
     const groups = transactions.reduce((acc, transaction) => {
@@ -12,7 +14,7 @@ const groupTransactionsByDate = (transactions: typeof TRANSACTIONS) => {
       }
       acc[dateKey].push(transaction);
       return acc;
-    }, {} as Record<string, typeof TRANSACTIONS>);
+    }, {} as Record<string, typeof TRANSACTIONS[0][]>);
 
     return Object.keys(groups).map(date => ({ title: date, data: groups[date] }));
 };
@@ -23,15 +25,24 @@ export default function StatementScreen() {
   const sortedTransactions = [...transactions].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
   const sections = groupTransactionsByDate(sortedTransactions);
 
+
   const handleDelete = (id: string) => {
-    Alert.alert(
-      "Confirmar Exclusão",
-      "Você tem certeza que deseja apagar esta transação?",
-      [
-        { text: "Cancelar", style: "cancel" },
-        { text: "Apagar", style: "destructive", onPress: () => deleteTransaction(id) }
-      ]
-    );
+    const message = "Você tem certeza que deseja apagar esta transação?";
+
+    if (Platform.OS === 'web') {
+      if (window.confirm(message)) {
+        deleteTransaction(id);
+      }
+    } else {
+      Alert.alert(
+        "Confirmar Exclusão",
+        message,
+        [
+          { text: "Cancelar", style: "cancel" },
+          { text: "Apagar", style: "destructive", onPress: () => deleteTransaction(id) }
+        ]
+      );
+    }
   };
 
   return (

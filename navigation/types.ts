@@ -4,7 +4,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 
 // Tipos para as rotas da navegação de pilha principal
 export type RootStackParamList = {
-  Main: undefined; // A rota 'Main' não recebe parâmetros
+  Main: undefined;
   AddTransaction: undefined;
   Categories: undefined;
 };
