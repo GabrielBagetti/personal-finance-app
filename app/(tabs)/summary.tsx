@@ -1,27 +1,27 @@
 import React from 'react';
-import { View, Text, SectionList, StyleSheet, SafeAreaView } from 'react-native';
-import { TRANSACTIONS } from '../../data/mockData.js';
-import { useTransactions } from '../../context/TransactionContext';
+import { View, Text, SectionList, StyleSheet, SafeAreaView, ActivityIndicator } from 'react-native';
+import { useTransactions, Transaction } from '../../context/TransactionContext'; // Pega os dados do contexto
 
-const groupTransactionsByMonth = (transactions: typeof TRANSACTIONS) => {
+// Função para agrupar transações por mês
+const groupTransactionsByMonth = (transactions: Transaction[]) => {
   const groups = transactions.reduce((acc, transaction) => {
-    const monthKey = transaction.timestamp.toLocaleDateString('pt-BR', {
+    const monthKey = new Date(transaction.timestamp).toLocaleDateString('pt-BR', {
       month: 'long',
       year: 'numeric',
     });
 
     if (!acc[monthKey]) {
-      acc[monthKey] = { income: 0, expenses: 0, transactions: [] };
+      acc[monthKey] = { income: 0, expenses: 0 };
     }
 
     if (transaction.type === 'receita') {
-      acc[monthKey].income += transaction.amount;
+      acc[monthKey].income += Number(transaction.amount);
     } else {
-      acc[monthKey].expenses += transaction.amount;
+      acc[monthKey].expenses += Number(transaction.amount);
     }
     
     return acc;
-  }, {} as Record<string, { income: number; expenses: number; transactions: typeof TRANSACTIONS }>);
+  }, {} as Record<string, { income: number; expenses: number }>);
 
   return Object.keys(groups).map(month => ({
     title: month.charAt(0).toUpperCase() + month.slice(1),
@@ -30,14 +30,25 @@ const groupTransactionsByMonth = (transactions: typeof TRANSACTIONS) => {
 };
 
 export default function MonthlySummaryScreen() {
-  const { transactions } = useTransactions();
+  // 1. Pega os dados e o estado de carregamento do contexto
+  const { transactions, isLoading } = useTransactions();
   const sections = groupTransactionsByMonth(transactions);
+
+  // 2. Mostra um indicador de carregamento
+  if (isLoading) {
+    return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <ActivityIndicator size="large" color="#820ad1" />
+        </View>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <Text style={styles.mainTitle}>Resumo Mensal</Text>
         
+        {/* 3. Mostra uma mensagem se não houver transações */}
         {transactions.length === 0 ? (
           <Text style={styles.emptyText}>Nenhum resumo para exibir.</Text>
         ) : (

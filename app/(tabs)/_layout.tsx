@@ -1,4 +1,3 @@
-// app/(tabs)/_layout.tsx
 import { Tabs } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
@@ -6,36 +5,44 @@ export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#820ad1',
-        headerShown: false,
+        tabBarActiveTintColor: '#820ad1', // Cor do ícone ativo
+        headerShown: false, // Esconde o cabeçalho padrão
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
           title: 'Início',
-          tabBarIcon: ({ color }) => <MaterialCommunityIcons name="home" size={28} color={color} />,
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="home" size={size} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
         name="statement"
         options={{
           title: 'Extrato',
-          tabBarIcon: ({ color }) => <MaterialCommunityIcons name="format-list-bulleted" size={28} color={color} />,
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="format-list-bulleted" size={size} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
         name="summary"
         options={{
           title: 'Resumo',
-          tabBarIcon: ({ color }) => <MaterialCommunityIcons name="chart-pie" size={28} color={color} />,
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="chart-pie" size={size} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: 'Perfil',
-          tabBarIcon: ({ color }) => <MaterialCommunityIcons name="account-circle" size={28} color={color} />,
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="account-circle" size={size} color={color} />
+          ),
         }}
       />
     </Tabs>
