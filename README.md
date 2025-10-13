@@ -34,7 +34,7 @@ Este projeto foi construído utilizando as seguintes tecnologias e ferramentas:
 
 ## 📈 Diagrama de Casos de Uso
 
-<img src="assets/images/use-cases-diagram-upd.jpg" alt="Diagrama de casos de uso">
+<img src="assets/images/casos-uso.jpg" alt="Diagrama de casos de uso">
 
 
 <!--
