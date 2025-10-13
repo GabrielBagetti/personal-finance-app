@@ -26,7 +26,6 @@ export default function ProfileScreen() {
           {user ? user.email : 'Carregando...'}
         </Text>
 
-        {/* ESTE É O LINK CORRETO PARA A TELA DE CATEGORIAS */}
         <Link href="/categories" asChild>
           <Pressable style={styles.menuItem}>
             <MaterialCommunityIcons name="shape-outline" size={24} color="#333" />

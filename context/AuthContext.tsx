@@ -3,28 +3,26 @@ import * as SecureStore from 'expo-secure-store';
 import { useRouter, useSegments } from 'expo-router';
 import { Platform } from 'react-native';
 
-// 1. DEFINIMOS A "FORMA" DO OBJETO DE USUÁRIO
 interface User {
   id: number;
   email: string;
 }
 
-// --- CONSTANTES ---
-const API_URL = 'http://192.154.1.4:3000'; // Exemplo, use o seu!
+const API_URL = 'http://192.154.1.2:3000'; 
 const TOKEN_KEY = 'session_token';
-const USER_KEY = 'user_data'; // Chave para guardar os dados do usuário
+const USER_KEY = 'user_data';
 
 interface AuthContextType {
-  signIn: (token: string, user: User) => void; // 2. signIn agora recebe o usuário
+  signIn: (token: string, user: User) => void; 
   signOut: () => void;
   session: string | null;
-  user: User | null; // 3. O contexto agora também tem o usuário
+  user: User | null; 
   isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// --- FUNÇÕES DE ARMAZENAMENTO ATUALIZADAS ---
+
 async function saveData(token: string, user: User) {
   const userString = JSON.stringify(user);
   if (Platform.OS === 'web') {
@@ -68,20 +66,18 @@ async function deleteData() {
   }
 }
 
-// --- PROVEDOR DE AUTENTICAÇÃO ---
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<string | null>(null);
-  const [user, setUser] = useState<User | null>(null); // 4. Estado para o usuário
+  const [user, setUser] = useState<User | null>(null); 
   const [isLoading, setIsLoading] = useState(true);
   
-  // ... (a lógica de redirecionamento com useRouter/useSegments não muda) ...
   const segments = useSegments();
   const router = useRouter();
   
   useEffect(() => {
     async function loadSession() {
       try {
-        const { token, user } = await loadData(); // Carrega ambos
+        const { token, user } = await loadData();
         if (token && user) {
           setSession(token);
           setUser(user);
@@ -108,17 +104,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const authActions = {
     signIn: async (token: string, userData: User) => {
-      await saveData(token, userData); // Salva ambos
+      await saveData(token, userData); 
       setSession(token);
       setUser(userData);
     },
     signOut: async () => {
-      await deleteData(); // Apaga ambos
+      await deleteData();
       setSession(null);
       setUser(null);
     },
     session,
-    user, // 5. Expõe o usuário para o resto do app
+    user,
     isLoading,
   };
 

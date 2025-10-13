@@ -1,4 +1,4 @@
-// server/index.js - COMPLETO
+// server/index.js 
 
 const express = require('express');
 const { Pool } = require('pg');
@@ -32,12 +32,6 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
-
-
-
-// =================================================================
-// ROTAS PÚBLICAS (NÃO PRECISAM DE AUTENTICAÇÃO)
-// =================================================================
 
 app.post('/register', async (req, res) => {
   const { email, password } = req.body;
@@ -87,11 +81,6 @@ app.post('/login', async (req, res) => {
         res.status(500).json({ error: "Erro no servidor ao fazer login." });
     }
 });
-
-
-// =================================================================
-// ROTAS PROTEGIDAS (PRECISAM DE AUTENTICAÇÃO)
-// =================================================================
 
 // ROTA PARA BUSCAR TRANSAÇÕES
 app.get('/transactions', authenticateToken, async (req, res) => {
@@ -167,10 +156,6 @@ app.get('/categories', authenticateToken, async (req, res) => {
     }
 });
 
-// =================================================================
-// NOVAS ROTAS PARA GERENCIAR CATEGORIAS (CRUD)
-// =================================================================
-
 // ADICIONAR UMA NOVA CATEGORIA
 app.post('/categories', authenticateToken, async (req, res) => {
     const { name, type } = req.body;
@@ -187,7 +172,6 @@ app.post('/categories', authenticateToken, async (req, res) => {
         );
         res.status(201).json(newCategory.rows[0]);
     } catch (err) {
-        // Trata o erro de nome UNIQUE
         if (err.code === '23505') {
             return res.status(409).json({ error: "Uma categoria com este nome já existe." });
         }
@@ -216,7 +200,6 @@ app.put('/categories/:id', authenticateToken, async (req, res) => {
         }
         res.json(updatedCategory.rows[0]);
     } catch (err) {
-        // Trata o erro de nome UNIQUE
         if (err.code === '23505') {
             return res.status(409).json({ error: "Uma categoria com este nome já existe." });
         }
@@ -231,8 +214,6 @@ app.delete('/categories/:id', authenticateToken, async (req, res) => {
     const userId = req.user.userId;
 
     try {
-        // BÔNUS: Apagaremos também as transações associadas a esta categoria para evitar dados órfãos.
-        // Se preferir não apagar, pode-se atribuir uma categoria "Outros" a elas.
         await pool.query("DELETE FROM transactions WHERE category = (SELECT name FROM categories WHERE id = $1 AND user_id = $2)", [id, userId]);
 
         const deleteOp = await pool.query(
@@ -252,4 +233,11 @@ app.delete('/categories/:id', authenticateToken, async (req, res) => {
 
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`✅ Servidor rodando na porta ${PORT}`));
+
+const server = app.listen(PORT, () => {
+  if (process.env.NODE_ENV !== 'test') {
+    console.log(`✅ Servidor rodando na porta ${PORT}`);
+  }
+});
+
+module.exports = { app, server, pool };

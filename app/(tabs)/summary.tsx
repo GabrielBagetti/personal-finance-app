@@ -1,8 +1,7 @@
 import React from 'react';
 import { View, Text, SectionList, StyleSheet, SafeAreaView, ActivityIndicator } from 'react-native';
-import { useTransactions, Transaction } from '../../context/TransactionContext'; // Pega os dados do contexto
+import { useTransactions, Transaction } from '../../context/TransactionContext';
 
-// Função para agrupar transações por mês
 const groupTransactionsByMonth = (transactions: Transaction[]) => {
   const groups = transactions.reduce((acc, transaction) => {
     const monthKey = new Date(transaction.timestamp).toLocaleDateString('pt-BR', {
@@ -30,11 +29,9 @@ const groupTransactionsByMonth = (transactions: Transaction[]) => {
 };
 
 export default function MonthlySummaryScreen() {
-  // 1. Pega os dados e o estado de carregamento do contexto
   const { transactions, isLoading } = useTransactions();
   const sections = groupTransactionsByMonth(transactions);
 
-  // 2. Mostra um indicador de carregamento
   if (isLoading) {
     return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -48,7 +45,6 @@ export default function MonthlySummaryScreen() {
       <View style={styles.container}>
         <Text style={styles.mainTitle}>Resumo Mensal</Text>
         
-        {/* 3. Mostra uma mensagem se não houver transações */}
         {transactions.length === 0 ? (
           <Text style={styles.emptyText}>Nenhum resumo para exibir.</Text>
         ) : (

@@ -65,7 +65,7 @@ export default function CategoriesScreen() {
           text: 'Apagar',
           style: 'destructive',
           onPress: async () => {
-            const success = await deleteCategory(Number(category.id)); // garante número
+            const success = await deleteCategory(Number(category.id));
             if (!success) {
               Alert.alert('Erro', 'Não foi possível apagar esta categoria.');
             }

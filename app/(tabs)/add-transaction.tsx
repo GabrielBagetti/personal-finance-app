@@ -3,7 +3,7 @@ import { View, Text, TextInput, Button, StyleSheet, Switch, Alert, ActivityIndic
 import { useRouter } from 'expo-router';
 import { useTransactions } from '../../context/TransactionContext';
 import { Picker } from '@react-native-picker/picker';
-import { useCategories } from '../../context/CategoryContext'; // 1. Importa do novo contexto de categorias
+import { useCategories } from '../../context/CategoryContext'; 
 
 export default function AddTransactionScreen() {
   const router = useRouter();
@@ -16,20 +16,14 @@ export default function AddTransactionScreen() {
   const [isExpense, setIsExpense] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   
-  // Filtra as categorias disponíveis com base no tipo (receita/despesa)
   const availableCategories = categories.filter(cat => cat.type === (isExpense ? 'despesa' : 'receita'));
-  
-  // Este useEffect garante que uma categoria padrão seja selecionada
-  // assim que a lista de categorias é carregada ou quando o tipo de transação muda.
+
   useEffect(() => {
     if (!isLoadingCategories && availableCategories.length > 0) {
-      // Se a categoria atualmente selecionada não estiver na nova lista,
-      // seleciona a primeira da lista como padrão.
       if (!availableCategories.find(cat => cat.name === selectedCategory)) {
         setSelectedCategory(availableCategories[0].name);
       }
     } else if (!isLoadingCategories && availableCategories.length === 0) {
-      // Se não houver categorias disponíveis, zera a seleção
       setSelectedCategory('');
     }
   }, [availableCategories, categories, isExpense, isLoadingCategories, router, selectedCategory]);

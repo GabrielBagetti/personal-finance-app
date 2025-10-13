@@ -21,8 +21,6 @@ export default function LoginScreen() {
       const data = await response.json();
       
       if (response.ok) {
-        // A MUDANÇA ESTÁ AQUI 👇
-        // Agora passamos o token E o objeto de usuário para a função signIn
         signIn(data.token, data.user);
       } else {
         Alert.alert('Falha no Login', data.error || 'Não foi possível fazer login.');

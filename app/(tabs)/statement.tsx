@@ -1,9 +1,8 @@
 import React from 'react';
 import { View, Text, SectionList, StyleSheet, SafeAreaView, TouchableOpacity, Alert, Platform, ActivityIndicator } from 'react-native';
-import { useTransactions, Transaction } from '../../context/TransactionContext'; // Pega os dados do contexto
+import { useTransactions, Transaction } from '../../context/TransactionContext'; 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-// Função auxiliar para agrupar as transações por data
 const groupTransactionsByDate = (transactions: Transaction[]) => {
     const groups = transactions.reduce((acc, transaction) => {
       const dateKey = new Date(transaction.timestamp).toLocaleDateString('pt-BR', {
@@ -22,10 +21,9 @@ const groupTransactionsByDate = (transactions: Transaction[]) => {
 };
 
 export default function StatementScreen() {
-  // 1. Pega os dados e o estado de carregamento do contexto
+
   const { transactions, isLoading, deleteTransaction } = useTransactions();
   
-  // A lógica de ordenação e agrupamento agora usa as transações do estado
   const sortedTransactions = [...transactions].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
   const sections = groupTransactionsByDate(sortedTransactions);
 
@@ -43,7 +41,7 @@ export default function StatementScreen() {
     }
   };
 
-  // 2. Mostra um indicador de carregamento enquanto os dados não chegam
+
   if (isLoading) {
     return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -57,7 +55,6 @@ export default function StatementScreen() {
       <View style={styles.container}>
         <Text style={styles.mainTitle}>Extrato Completo</Text>
         
-        {/* 3. Mostra uma mensagem se não houver transações */}
         {transactions.length === 0 ? (
           <Text style={styles.emptyText}>Nenhuma transação encontrada.</Text>
         ) : (

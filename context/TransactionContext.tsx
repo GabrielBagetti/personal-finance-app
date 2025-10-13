@@ -1,7 +1,6 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import { useAuth, API_URL } from './AuthContext';
 
-// Definimos a "forma" de uma transação aqui
 export interface Transaction {
   id: string;
   description: string;
@@ -22,17 +21,14 @@ interface TransactionContextType {
 const TransactionContext = createContext<TransactionContextType | undefined>(undefined);
 
 export const TransactionProvider = ({ children }: { children: ReactNode }) => {
-  // 1. COMEÇA COM O ESTADO VAZIO!
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { session } = useAuth(); // Pega o token de autenticação
+  const { session } = useAuth(); 
 
-  // Este useEffect "ouve" a sessão. Quando o usuário loga (e a 'session' aparece),
-  // ele busca as transações daquele usuário no banco de dados.
   useEffect(() => {
     const fetchTransactions = async () => {
       if (!session) {
-        setTransactions([]); // Se não há sessão (logout), a lista fica vazia.
+        setTransactions([]);
         return;
       }
       setIsLoading(true);
@@ -46,7 +42,7 @@ export const TransactionProvider = ({ children }: { children: ReactNode }) => {
         if (response.ok) {
           const formattedData = data.map((tx: any) => ({
             ...tx,
-            timestamp: new Date(tx.timestamp) // Converte a data de texto para objeto Date
+            timestamp: new Date(tx.timestamp)
           }));
           setTransactions(formattedData);
         } else {
@@ -60,11 +56,11 @@ export const TransactionProvider = ({ children }: { children: ReactNode }) => {
     };
 
     fetchTransactions();
-  }, [session]); // Roda toda vez que o estado de login/logout muda
+  }, [session]);
 
-  // 2. FUNÇÃO CORRIGIDA PARA SALVAR NO BANCO DE DADOS
+  
   const addTransaction = async (newTransactionData: Omit<Transaction, 'id' | 'timestamp'>) => {
-    if (!session) return; // Não faz nada se não estiver logado
+    if (!session) return; 
     try {
         console.log('[CONTEXT] Enviando nova transação para a API:', newTransactionData);
         const response = await fetch(`${API_URL}/transactions`, {
@@ -75,11 +71,10 @@ export const TransactionProvider = ({ children }: { children: ReactNode }) => {
             },
             body: JSON.stringify(newTransactionData),
         });
-        const addedTxFromDB = await response.json(); // A transação que foi salva no banco
+        const addedTxFromDB = await response.json(); 
         if (response.ok) {
           console.log('[CONTEXT] Transação salva com sucesso no DB:', addedTxFromDB);
           const formattedTx = { ...addedTxFromDB, timestamp: new Date(addedTxFromDB.timestamp) };
-          // Adiciona a nova transação (que veio do DB) no topo da lista na tela
           setTransactions(prev => [formattedTx, ...prev]);
         } else {
           console.error('[CONTEXT] Erro da API ao salvar:', addedTxFromDB.error);
@@ -96,7 +91,6 @@ export const TransactionProvider = ({ children }: { children: ReactNode }) => {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${session}` },
         });
-        // Remove a transação da lista na tela
         setTransactions(prev => prev.filter(tx => tx.id.toString() !== id));
     } catch(e) {
         console.error('Erro ao deletar transação:', e);

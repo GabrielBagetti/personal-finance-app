@@ -5,8 +5,8 @@ export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#820ad1', // Cor do ícone ativo
-        headerShown: false, // Esconde o cabeçalho padrão
+        tabBarActiveTintColor: '#820ad1', 
+        headerShown: false, 
       }}
     >
       <Tabs.Screen

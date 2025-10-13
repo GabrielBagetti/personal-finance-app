@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import { useAuth, API_URL } from './AuthContext';
 
-// 1. A CORREÇÃO PRINCIPAL: 'id' agora é um NÚMERO
+
 export interface Category {
   id: number;
   name: string;
@@ -12,7 +12,7 @@ interface CategoryContextType {
   categories: Category[];
   addCategory: (name: string, type: 'receita' | 'despesa') => Promise<boolean>;
   updateCategory: (id: number, newName: string) => Promise<boolean>;
-  deleteCategory: (id: number) => Promise<boolean>; // Agora espera um número
+  deleteCategory: (id: number) => Promise<boolean>;
   isLoading: boolean;
 }
 

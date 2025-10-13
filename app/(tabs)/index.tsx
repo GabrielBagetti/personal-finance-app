@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, FlatList, Pressable, ActivityIndicator } from 'react-native';
 import { Link, useRouter } from 'expo-router';
-import { useTransactions, Transaction } from '../../context/TransactionContext'; // Pega os dados do contexto
+import { useTransactions, Transaction } from '../../context/TransactionContext';
 import { useAuth } from '../../context/AuthContext';
 
 export default function HomeScreen() {
@@ -30,7 +30,6 @@ export default function HomeScreen() {
         </Text>
       </View>
       
-      {/* O Link agora navega para a rota modal que definimos no _layout.tsx */}
       <Link href="/add-transaction" asChild>
         <Pressable style={styles.button}>
           <Text style={styles.buttonText}>Adicionar Transação</Text>
