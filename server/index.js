@@ -1,4 +1,4 @@
-// server/index.js 
+// server/index.js - COMPLETO E COM UPLOAD DE FOTO
 
 const express = require('express');
 const { Pool } = require('pg');
@@ -7,19 +7,42 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 require('dotenv').config();
 
+// Novas importações para arquivos
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs/promises');
+const { v4: uuidv4 } = require('uuid');
+
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const pool = new Pool({
-  user: process.env.DB_USER || 'postgres',
+const pool = new Pool({user: process.env.DB_USER || 'postgres',
   host: process.env.DB_HOST || 'localhost',
   database: process.env.DB_NAME || 'postgres',
   password: process.env.DB_PASSWORD || '12345678',
   port: process.env.DB_PORT || 5432,
 });
 
-const JWT_SECRET = process.env.JWT_SECRET || 'seu-segredo-super-secreto-para-jwt';
+
+const JWT_SECRET = process.env.JWT_SECRET || 'seu-segredo';
+
+// --- CONFIGURAÇÃO DO UPLOAD (MULTER) ---
+const UPLOAD_DIR = path.join(__dirname, 'uploads');
+fs.mkdir(UPLOAD_DIR, { recursive: true }).catch(console.error);
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, UPLOAD_DIR),
+  filename: (req, file, cb) => {
+    const uniqueSuffix = uuidv4();
+    const fileExtension = path.extname(file.originalname);
+    cb(null, `${uniqueSuffix}${fileExtension}`);
+  }
+});
+const upload = multer({ storage: storage, limits: { fileSize: 5 * 1024 * 1024 } }); // Limite de 5MB
+
+// Rota para servir as imagens salvas
+app.use('/uploads', express.static(UPLOAD_DIR));
 
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
@@ -33,6 +56,7 @@ const authenticateToken = (req, res, next) => {
 };
 
 
+// --- ROTAS DE AUTENTICAÇÃO ATUALIZADAS ---
 app.post('/register', async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -56,33 +80,32 @@ app.post('/register', async (req, res) => {
   }
 });
 
+
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
-    if (!email || !password) {
-        return res.status(400).json({ error: 'Email e senha são obrigatórios.' });
-    }
-
     try {
         const userResult = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
-        if (userResult.rows.length === 0) {
-            return res.status(401).json({ error: 'Credenciais inválidas.' });
-        }
+        if (userResult.rows.length === 0) return res.status(401).json({ error: 'Credenciais inválidas.' });
+        
         const user = userResult.rows[0];
-
         const isMatch = await bcrypt.compare(password, user.password_hash);
-        if (!isMatch) {
-            return res.status(401).json({ error: 'Credenciais inválidas.' });
-        }
+        if (!isMatch) return res.status(401).json({ error: 'Credenciais inválidas.' });
 
-        const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
-        res.json({ token, user: { id: user.id, email: user.email } });
+        // ATUALIZADO: Inclui a URL da foto no token
+        const tokenPayload = { 
+            userId: user.id, 
+            email: user.email, 
+            profilePhotoUrl: user.profile_photo_url 
+        };
+        const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '1h' });
+
+        res.json({ token, user: { id: user.id, email: user.email, profilePhotoUrl: user.profile_photo_url } });
     } catch (err) {
         console.error("Erro no login:", err.message);
-        res.status(500).json({ error: "Erro no servidor ao fazer login." });
+        res.status(500).json({ error: "Erro no servidor." });
     }
 });
 
-// ROTA PARA BUSCAR TRANSAÇÕES
 app.get('/transactions', authenticateToken, async (req, res) => {
     try {
         const userTransactions = await pool.query(
@@ -231,13 +254,38 @@ app.delete('/categories/:id', authenticateToken, async (req, res) => {
     }
 });
 
+// --- NOVA ROTA PARA UPLOAD DE FOTO DE PERFIL ---
+app.post('/upload-profile-photo', authenticateToken, upload.single('profilePhoto'), async (req, res) => {
+    if (!req.file) return res.status(400).json({ error: 'Nenhum arquivo de imagem foi enviado.' });
+
+    const userId = req.user.userId;
+    const photoPath = `/uploads/${req.file.filename}`;
+
+    try {
+        // Pega o caminho da foto antiga para poder apagar depois
+        const oldPhotoResult = await pool.query("SELECT profile_photo_url FROM users WHERE id = $1", [userId]);
+        const oldPhotoPath = oldPhotoResult.rows[0]?.profile_photo_url;
+
+        // Atualiza o caminho da foto no banco de dados
+        const updateResult = await pool.query("UPDATE users SET profile_photo_url = $1 WHERE id = $2 RETURNING profile_photo_url", [photoPath, userId]);
+
+        // Se havia uma foto antiga, tenta apagar o arquivo do servidor
+        if (oldPhotoPath) {
+            const absoluteOldPhotoPath = path.join(__dirname, oldPhotoPath);
+            fs.unlink(absoluteOldPhotoPath).catch(err => console.warn(`Não foi possível remover a foto antiga: ${err.message}`));
+        }
+        
+        res.json({ message: 'Foto de perfil atualizada!', profilePhotoUrl: updateResult.rows[0].profile_photo_url });
+    } catch (err) {
+        console.error("Erro ao fazer upload da foto:", err.message);
+        res.status(500).json({ error: "Erro no servidor." });
+    }
+});
 
 const PORT = process.env.PORT || 3000;
-
 const server = app.listen(PORT, () => {
   if (process.env.NODE_ENV !== 'test') {
     console.log(`✅ Servidor rodando na porta ${PORT}`);
   }
 });
-
 module.exports = { app, server, pool };

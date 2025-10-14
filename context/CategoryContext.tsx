@@ -15,7 +15,6 @@ interface CategoryContextType {
   deleteCategory: (id: number) => Promise<boolean>;
   isLoading: boolean;
 }
-
 const CategoryContext = createContext<CategoryContextType | undefined>(undefined);
 
 export const CategoryProvider = ({ children }: { children: ReactNode }) => {

@@ -6,9 +6,10 @@ import { Platform } from 'react-native';
 interface User {
   id: number;
   email: string;
+  profilePhotoUrl?: string;
 }
 
-const API_URL = 'http://192.154.1.2:3000'; 
+const API_URL = 'http://192.154.1.5:3000'; 
 const TOKEN_KEY = 'session_token';
 const USER_KEY = 'user_data';
 
@@ -18,6 +19,7 @@ interface AuthContextType {
   session: string | null;
   user: User | null; 
   isLoading: boolean;
+  updateUserProfilePhoto: (photoUrl: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -91,6 +93,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     loadSession();
   }, []);
 
+  const updateUserProfilePhoto = (photoUrl: string) => {
+    setUser(currentUser => {
+      if (!currentUser) return null;
+      const updatedUser = { ...currentUser, profilePhotoUrl: photoUrl };
+      // Salva o usuário atualizado no storage para persistência
+      saveData(session!, updatedUser);
+      return updatedUser;
+    });
+  };
+
   useEffect(() => {
     if (isLoading) return;
     const inAppGroup = segments[0] === '(tabs)';
@@ -116,6 +128,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     session,
     user,
     isLoading,
+    updateUserProfilePhoto,
   };
 
   return (
