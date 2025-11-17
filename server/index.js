@@ -281,6 +281,95 @@ app.post('/upload-profile-photo', authenticateToken, upload.single('profilePhoto
     }
 });
 
+app.delete('/remove-profile-photo', authenticateToken, async (req, res) => {
+    const userId = req.user.userId;
+    try {
+        // 1. Acha a foto antiga para apagar o arquivo
+        const oldPhotoResult = await pool.query("SELECT profile_photo_url FROM users WHERE id = $1", [userId]);
+        const oldPhotoPath = oldPhotoResult.rows[0]?.profile_photo_url;
+
+        // 2. Define a URL da foto como NULL no banco de dados
+        await pool.query("UPDATE users SET profile_photo_url = NULL WHERE id = $1", [userId]);
+
+        // 3. Se a foto antiga existia, apaga o arquivo do servidor
+        if (oldPhotoPath) {
+            const absoluteOldPhotoPath = path.join(__dirname, oldPhotoPath);
+            fs.unlink(absoluteOldPhotoPath).catch(err => console.warn(`Não foi possível remover a foto antiga: ${err.message}`));
+        }
+        
+        res.json({ message: 'Foto de perfil removida com sucesso.' });
+    } catch (err) {
+        console.error("Erro ao remover foto:", err.message);
+        res.status(500).json({ error: "Erro no servidor." });
+    }
+});
+
+
+app.put('/update-email', authenticateToken, async (req, res) => {
+    const { newEmail, currentPassword } = req.body;
+    const userId = req.user.userId;
+
+    if (!newEmail || !currentPassword) {
+        return res.status(400).json({ error: "Email novo e senha atual são obrigatórios." });
+    }
+    try {
+        // 1. Verificar a senha atual
+        const userResult = await pool.query("SELECT * FROM users WHERE id = $1", [userId]);
+        const user = userResult.rows[0];
+        const isMatch = await bcrypt.compare(currentPassword, user.password_hash);
+        if (!isMatch) {
+            return res.status(401).json({ error: "Senha atual incorreta." });
+        }
+
+        // 2. Se a senha estiver correta, atualizar o email
+        const updateResult = await pool.query(
+            "UPDATE users SET email = $1 WHERE id = $2 RETURNING id, email",
+            [newEmail, userId]
+        );
+        res.json(updateResult.rows[0]);
+    } catch (err) {
+        // 23505 é o código de violação de constraint "UNIQUE"
+        if (err.code === '23505') {
+            return res.status(409).json({ error: "Este email já está em uso por outra conta." });
+        }
+        console.error("Erro ao atualizar email:", err.message);
+        res.status(500).json({ error: "Erro no servidor." });
+    }
+});
+
+// ROTA PARA ALTERAR A SENHA
+app.put('/update-password', authenticateToken, async (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+    const userId = req.user.userId;
+
+    if (!currentPassword || !newPassword) {
+        return res.status(400).json({ error: "Todos os campos são obrigatórios." });
+    }
+    try {
+        // 1. Verificar a senha atual
+        const userResult = await pool.query("SELECT * FROM users WHERE id = $1", [userId]);
+        const user = userResult.rows[0];
+        const isMatch = await bcrypt.compare(currentPassword, user.password_hash);
+        if (!isMatch) {
+            return res.status(401).json({ error: "Senha atual incorreta." });
+        }
+
+        // 2. Se a senha estiver correta, criar o hash da nova senha
+        const salt = await bcrypt.genSalt(10);
+        const newPasswordHash = await bcrypt.hash(newPassword, salt);
+
+        // 3. Atualizar no banco
+        await pool.query(
+            "UPDATE users SET password_hash = $1 WHERE id = $2",
+            [newPasswordHash, userId]
+        );
+        res.json({ message: "Senha alterada com sucesso." });
+    } catch (err) {
+        console.error("Erro ao alterar senha:", err.message);
+        res.status(500).json({ error: "Erro no servidor." });
+    }
+});
+
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => {
   if (process.env.NODE_ENV !== 'test') {

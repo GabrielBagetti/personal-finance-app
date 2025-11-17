@@ -6,7 +6,7 @@ import { Platform } from 'react-native';
 interface User {
   id: number;
   email: string;
-  profilePhotoUrl?: string;
+  profilePhotoUrl?: string | null;
 }
 
 const API_URL = 'http://192.154.1.3:3000'; 
@@ -19,7 +19,8 @@ interface AuthContextType {
   session: string | null;
   user: User | null; 
   isLoading: boolean;
-  updateUserProfilePhoto: (photoUrl: string) => void;
+  updateUserEmail: (newEmail: string) => Promise<void>;
+  updateUserProfilePhoto: (photoUrl: string | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -93,14 +94,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     loadSession();
   }, []);
 
-  const updateUserProfilePhoto = (photoUrl: string) => {
-    setUser(currentUser => {
-      if (!currentUser) return null;
-      const updatedUser = { ...currentUser, profilePhotoUrl: photoUrl };
-      saveData(session!, updatedUser);
-      return updatedUser;
-    });
-  };
+
 
   useEffect(() => {
     if (isLoading) return;
@@ -124,10 +118,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setSession(null);
       setUser(null);
     },
+
+  updateUserEmail: async (newEmail: string) => {
+      if (user && session) {
+        const updatedUser = { ...user, email: newEmail };
+        setUser(updatedUser);
+        await saveData(session, updatedUser); // Atualiza os dados salvos
+      }
+    },
+    updateUserProfilePhoto: (photoUrl: string | null ) => {
+    setUser(currentUser => {
+      if (!currentUser) return null;
+      const updatedUser = { ...currentUser, profilePhotoUrl: photoUrl };
+      saveData(session!, updatedUser);
+      return updatedUser;
+    });
+  },
+
     session,
     user,
     isLoading,
-    updateUserProfilePhoto,
   };
 
   return (

@@ -1,13 +1,13 @@
 import { Tabs } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
+
 export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: '#820ad1',
-        // Deixamos o cabeçalho ser controlado por cada tela individualmente
-        // headerShown: false, // <- Removido para dar controle às telas
+        //headerShown: false,
       }}
     >
       <Tabs.Screen
@@ -45,8 +45,31 @@ export default function TabsLayout() {
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="account-circle" size={size} color={color} />
           ),
-          // Removemos o botão de sair do cabeçalho daqui
+          
         }}
+      />
+      <Tabs.Screen 
+        name="add-transaction" 
+        options={{ 
+          href: null,
+          headerShown: false 
+        }} 
+      />
+
+      <Tabs.Screen 
+        name="categories" 
+        options={{ 
+          href: null,
+          headerShown: false 
+        }} 
+      />
+
+      <Tabs.Screen 
+        name="settings" 
+        options={{ 
+          href: null,
+          headerShown: false 
+        }} 
       />
     </Tabs>
   );

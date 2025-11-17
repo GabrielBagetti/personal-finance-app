@@ -6,6 +6,8 @@ import { useEffect } from 'react';
 import { ActivityIndicator, View, Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
 
+// import { InitialLayout } from './_layout.internal'; // 2. (Ver próximo arquivo)
+
 // 2. CONFIGURAÇÃO DO HANDLER (Como a notificação se comporta com o app aberto)
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -75,10 +77,11 @@ const InitialLayout = () => {
   return (
     <Stack>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="add-transaction" options={{ title: 'Adicionar Transação', presentation: 'modal' }} />
+      {/* <Stack.Screen name="add-transaction" options={{ title: 'Adicionar Transação', presentation: 'modal' }} />
       <Stack.Screen name="categories" options={{ title: 'Gerenciar Categorias', presentation: 'modal' }} />
-      <Stack.Screen name="login" options={{ headerShown: false }} />
-      <Stack.Screen name="register" options={{ headerShown: false }} />
+      <Stack.Screen name="settings" options={{ title: 'Configurações', presentation: 'modal'}} /> */}
+      {/* <Stack.Screen name="login" options={{ headerShown: false }} />
+      <Stack.Screen name="register" options={{ headerShown: false }} /> */}
     </Stack>
   );
 }
@@ -88,7 +91,9 @@ export default function RootLayout() {
     <AuthProvider>
       <TransactionProvider>
         <CategoryProvider>
-          <InitialLayout />
+          {/* <ThemeProvider>  */}
+            <InitialLayout />
+          {/* </ThemeProvider> */}
         </CategoryProvider>
       </TransactionProvider>
     </AuthProvider>
