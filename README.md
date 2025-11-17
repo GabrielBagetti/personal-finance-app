@@ -31,12 +31,39 @@ Este projeto foi construído utilizando as seguintes tecnologias e ferramentas:
 * **Banco de Dados:** Utilização de um banco de dados para armazenar as informações das transações de forma segura e eficiente.
 
 ---
+Para rodar o app:
+
+```bash
+npm install
+npx expo start
+```
+---
+
+Para rodar o servidor:
+
+```bash
+cd server
+node index.js
+```
+---
+
+Para rodar testes:
+
+```bash
+cd server
+npm test
+```
 
 ## 📈 Diagrama de Casos de Uso
 
 <img src="assets/images/casos-uso.jpg" alt="Diagrama de casos de uso">
 
 
+---
+
+## 📈 Diagrama de Classes
+
+<img src="assets/images/class-diagram.jpg" alt="Diagrama de classes">
 <!--
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
