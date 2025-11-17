@@ -1,6 +1,6 @@
 // app/categories.tsx
 
-import React, { useState } from 'react';
+import React, { useState, useMemo} from 'react';
 import {
   View,
   Text,
@@ -17,8 +17,12 @@ import {
 } from 'react-native';
 import { useCategories, Category } from '../../context/CategoryContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useTheme } from '../../context/ThemeContext'; // 1. Importar o Tema
+import { lightColors } from '../../constants/Colors'; // Importar o tipo
 
 export default function CategoriesScreen() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const { categories, isLoading, addCategory, updateCategory, deleteCategory } = useCategories();
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -155,64 +159,113 @@ export default function CategoriesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: '#fff' },
-  container: { flex: 1, paddingHorizontal: 16 },
-  centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  mainTitle: { fontSize: 24, fontWeight: 'bold' },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 16,
-  },
-  item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f9f9f9',
-    padding: 15,
-    borderRadius: 8,
-    marginBottom: 8,
-  },
-  itemText: { fontSize: 16, marginLeft: 15, marginRight: 'auto' },
-  actions: { flexDirection: 'row', gap: 15 },
-  emptyText: { textAlign: 'center', marginTop: 50, fontSize: 16, color: 'gray' },
-  modalBackdrop: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    elevation: 5,
-    width: '85%',
-  },
-  modalTitle: { fontSize: 20, marginBottom: 15 },
-  input: {
-    width: '100%',
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    marginBottom: 15,
-    borderRadius: 5,
-  },
-  switchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-    gap: 10,
-  },
-  activeSwitch: { fontWeight: 'bold' },
-  modalActions: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
-    marginTop: 10,
-  },
-  warningText: { fontSize: 10, color: 'gray', marginBottom: 20 },
+const createStyles = (colors: typeof lightColors) => StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    container: { 
+      flex: 1, 
+      padding: 16, 
+      backgroundColor: colors.background
+    },
+    centered: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: colors.background,
+    },
+    header: { 
+      marginBottom: 16,
+      gap: 12,
+    },
+    mainTitle: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: colors.text,
+      marginBottom: 12,
+    },
+    item: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: 16,
+      backgroundColor: colors.card,
+      borderRadius: 8,
+      marginBottom: 8,
+      borderWidth: 1,
+      borderColor: colors.cardBorder,
+    },
+    itemText: {
+      flex: 1,
+      fontSize: 16,
+      fontWeight: '500',
+      color: colors.text,
+      marginLeft: 12,
+    },
+    actions: {
+      flexDirection: 'row',
+      gap: 16,
+    },
+    modalBackdrop: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalView: {
+      width: '90%',
+      backgroundColor: colors.card,
+      borderRadius: 12,
+      padding: 20,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
+    },
+    modalTitle: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: colors.text,
+      marginBottom: 16,
+    },
+    input: {
+      backgroundColor: colors.background,
+      borderWidth: 1,
+      borderColor: colors.cardBorder,
+      borderRadius: 8,
+      padding: 12,
+      fontSize: 14,
+      color: colors.text,
+      marginBottom: 16,
+    },
+    switchContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginVertical: 16,
+      gap: 10,
+    },
+    activeSwitch: {
+      fontWeight: 'bold',
+      color: colors.text,
+      fontSize: 14,
+    },
+    warningText: {
+      fontSize: 12,
+      color: '#F44336',
+      marginBottom: 16,
+      textAlign: 'center',
+    },
+    modalActions: {
+      flexDirection: 'row',
+      gap: 12,
+      marginTop: 16,
+    },
+    emptyText: { 
+      textAlign: 'center', 
+      marginTop: 20, 
+      fontSize: 16, 
+      color: 'gray' 
+    },
 });

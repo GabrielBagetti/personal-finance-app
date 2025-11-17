@@ -1,6 +1,10 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import { View, Text, SectionList, StyleSheet, SafeAreaView, ActivityIndicator } from 'react-native';
 import { useTransactions, Transaction } from '../../context/TransactionContext';
+import { useTheme } from '../../context/ThemeContext'; // 1. Importar o Tema
+import { lightColors } from '../../constants/Colors'; // Importar o tipo de cores
+
+
 
 const groupTransactionsByMonth = (transactions: Transaction[]) => {
   const groups = transactions.reduce((acc, transaction) => {
@@ -29,6 +33,8 @@ const groupTransactionsByMonth = (transactions: Transaction[]) => {
 };
 
 export default function MonthlySummaryScreen() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const { transactions, isLoading } = useTransactions();
   const sections = groupTransactionsByMonth(transactions);
 
@@ -77,18 +83,83 @@ export default function MonthlySummaryScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: '#fff' },
-  container: { flex: 1, paddingHorizontal: 16 },
-  mainTitle: { fontSize: 24, fontWeight: 'bold', paddingVertical: 16 },
-  header: { fontSize: 18, fontWeight: 'bold', marginTop: 20, marginBottom: 10 },
-  card: { backgroundColor: '#f9f9f9', padding: 15, borderRadius: 8, borderWidth: 1, borderColor: '#eee' },
-  row: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 5 },
-  label: { fontSize: 16, color: 'gray' },
-  labelTotal: { fontSize: 16, fontWeight: 'bold' },
-  income: { fontSize: 16, color: 'green', fontWeight: '500' },
-  expense: { fontSize: 16, color: 'red', fontWeight: '500' },
-  balance: { fontSize: 16, fontWeight: 'bold', color: '#333' },
-  totalRow: { borderTopWidth: 1, borderTopColor: '#eee', marginTop: 5, paddingTop: 10 },
-  emptyText: { textAlign: 'center', marginTop: 20, fontSize: 16, color: 'gray' },
+const createStyles = (colors: typeof lightColors) => StyleSheet.create({
+    safeArea: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    container: { 
+      flex: 1, 
+      padding: 16, 
+      backgroundColor: colors.background
+    },
+    mainTitle: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: colors.text,
+      marginBottom: 16,
+    },
+    header: { 
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: colors.text,
+      marginTop: 16,
+      marginBottom: 12,
+    },
+    card: {
+      backgroundColor: colors.card,
+      borderRadius: 12,
+      padding: 16,
+      marginBottom: 16,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 3.84,
+      elevation: 3,
+      borderWidth: 1,
+      borderColor: colors.cardBorder,
+    },
+    row: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 8,
+    },
+    totalRow: {
+      marginTop: 12,
+      paddingTop: 12,
+      borderTopWidth: 1,
+      borderTopColor: colors.cardBorder,
+    },
+    label: {
+      fontSize: 14,
+      color: colors.text,
+      fontWeight: '500',
+    },
+    labelTotal: {
+      fontSize: 14,
+      color: colors.text,
+      fontWeight: 'bold',
+    },
+    income: {
+      fontSize: 14,
+      fontWeight: 'bold',
+      color: '#4CAF50',
+    },
+    expense: {
+      fontSize: 14,
+      fontWeight: 'bold',
+      color: '#F44336',
+    },
+    balance: {
+      fontSize: 16,
+      fontWeight: 'bold',
+      color: colors.text,
+    },
+    emptyText: { 
+      textAlign: 'center', 
+      marginTop: 20, 
+      fontSize: 16, 
+      color: 'gray' 
+    },
 });

@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Switch, Alert, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTransactions } from '../../context/TransactionContext';
 import { Picker } from '@react-native-picker/picker';
 import { useCategories } from '../../context/CategoryContext'; 
+import { useTheme } from '../../context/ThemeContext'; // 1. Importar o Tema
+import { lightColors } from '../../constants/Colors'; // Importar o tipo
 
 export default function AddTransactionScreen() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const router = useRouter();
   const { addTransaction } = useTransactions();
   // 2. Pega as categorias e o estado de carregamento do CategoryContext
@@ -103,52 +107,57 @@ export default function AddTransactionScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 5,
-    color: '#555',
-    marginLeft: 5,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 15,
-    fontSize: 16,
-  },
-  pickerContainer: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    marginBottom: 20,
-    justifyContent: 'center',
-  },
-  switchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: 20,
-  },
-  switchLabel: {
-    fontSize: 16,
-    marginHorizontal: 10,
-    color: 'gray',
-  },
-  activeSwitch: {
-    color: 'black',
-    fontWeight: 'bold',
-  },
-  warningText: {
+const createStyles = (colors: typeof lightColors) => StyleSheet.create({
+    container: { 
+      flex: 1, 
+      padding: 16, 
+      backgroundColor: colors.background
+    },
+    label: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: colors.text,
+      marginBottom: 8,
+      marginTop: 16,
+    },
+    input: {
+      backgroundColor: colors.card,
+      borderWidth: 1,
+      borderColor: colors.cardBorder,
+      borderRadius: 8,
+      padding: 12,
+      fontSize: 14,
+      color: colors.text,
+    },
+    pickerContainer: {
+      backgroundColor: colors.card,
+      borderWidth: 1,
+      borderColor: colors.cardBorder,
+      borderRadius: 8,
+      marginBottom: 16,
+      overflow: 'hidden',
+    },
+    switchContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginVertical: 20,
+      paddingHorizontal: 16,
+    },
+    switchLabel: {
+      fontSize: 14,
+      color: colors.text,
+      marginHorizontal: 10,
+      fontWeight: '500',
+    },
+    activeSwitch: {
+      fontWeight: 'bold',
+      fontSize: 16,
+    },
+    warningText: {
+      marginTop: 12,
+      fontSize: 14,
+      color: '#F44336',
       textAlign: 'center',
-      marginTop: 10,
-      color: 'red',
-      fontSize: 12,
-  }
+    },
 });

@@ -1,39 +1,40 @@
-// app/settings.tsx - NOVO ARQUIVO
-
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, ScrollView, Platform } from 'react-native';
+import React, { useState, useMemo } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, Alert, ScrollView, Switch, Platform } from 'react-native';
 import { useAuth, API_URL } from '../../context/AuthContext';
 import { useRouter } from 'expo-router';
-import * as Notifications from 'expo-notifications'; // Importa o módulo de notificações
+import * as Notifications from 'expo-notifications';
+import { useTheme } from '../../context/ThemeContext'; // 1. Importa o hook de TEMA
+import { lightColors } from '../../constants/Colors'; // Importa o tipo de cores
 
 export default function SettingsScreen() {
   const { session, updateUserEmail, signOut } = useAuth();
+  const { theme, toggleTheme, colors } = useTheme(); // 2. Pega o tema, a função e as cores
   const router = useRouter();
 
+  // Estados dos formulários
   const [currentPasswordForEmail, setCurrentPasswordForEmail] = useState('');
   const [newEmail, setNewEmail] = useState('');
-
   const [currentPasswordForPwd, setCurrentPasswordForPwd] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
 
+  // 3. Cria os estilos dinâmicos
+  // Usamos useMemo para evitar que os estilos sejam recalculados a cada renderização
+ const styles = useMemo(() => createStyles(colors), [colors]);
+
   // Função para disparar a notificação "toast"
   const showSuccessToast = (title: string, body: string) => {
     if (Platform.OS === 'web') {
-      // Na web, o Alert é a melhor opção não-intrusiva
       alert(`${title}\n${body}`);
       return;
     }
     Notifications.scheduleNotificationAsync({
-      content: {
-        title: title,
-        body: body,
-        sound: true,
-      },
-      trigger: null, // Dispara imediatamente
+      content: { title: title, body: body, sound: true },
+      trigger: null,
     });
   };
 
+  // Função para alterar o email
   const handleUpdateEmail = async () => {
     if (!newEmail || !currentPasswordForEmail) {
       Alert.alert("Erro", "Preencha todos os campos para alterar o email.");
@@ -42,20 +43,14 @@ export default function SettingsScreen() {
     try {
       const response = await fetch(`${API_URL}/update-email`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session}`
-        },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session}` },
         body: JSON.stringify({ newEmail, currentPassword: currentPasswordForEmail })
       });
       const data = await response.json();
       if (response.ok) {
         await updateUserEmail(data.email);
-        
-        
         showSuccessToast("Sucesso!", "Seu email foi alterado.");
-        router.back(); 
-        
+        router.back();
       } else {
         throw new Error(data.error);
       }
@@ -64,6 +59,7 @@ export default function SettingsScreen() {
     }
   };
 
+  // Função para alterar a senha
   const handleUpdatePassword = async () => {
     if (newPassword !== confirmNewPassword) {
       Alert.alert("Erro", "As novas senhas não coincidem.");
@@ -76,15 +72,11 @@ export default function SettingsScreen() {
     try {
       const response = await fetch(`${API_URL}/update-password`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session}`
-        },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session}` },
         body: JSON.stringify({ currentPassword: currentPasswordForPwd, newPassword })
       });
       const data = await response.json();
       if (response.ok) {
-        
         Alert.alert("Sucesso!", "Sua senha foi alterada. Por favor, faça login novamente.", [
           { text: "OK", onPress: () => {
             signOut();
@@ -100,12 +92,30 @@ export default function SettingsScreen() {
   };
 
   return (
+    // 4. Aplica os estilos dinâmicos no container principal
     <ScrollView style={styles.container}>
+      
+      {/* CARD PARA O TEMA */}
+      <View style={styles.card}>
+        <Text style={styles.title}>Aparência</Text>
+        <View style={styles.themeRow}>
+          <Text style={styles.themeLabel}>Modo Escuro (Dark Mode)</Text>
+          <Switch
+            trackColor={{ false: "#767577", true: "#81b0ff" }}
+            thumbColor={theme === 'dark' ? colors.tint : "#f4f3f4"}
+            onValueChange={toggleTheme}
+            value={theme === 'dark'}
+          />
+        </View>
+      </View>
+
+      {/* CARD PARA ALTERAR EMAIL */}
       <View style={styles.card}>
         <Text style={styles.title}>Alterar Email</Text>
         <TextInput
           style={styles.input}
           placeholder="Novo Email"
+          placeholderTextColor="#999"
           keyboardType="email-address"
           autoCapitalize="none"
           value={newEmail}
@@ -114,6 +124,7 @@ export default function SettingsScreen() {
         <TextInput
           style={styles.input}
           placeholder="Senha Atual"
+          placeholderTextColor="#999"
           secureTextEntry
           value={currentPasswordForEmail}
           onChangeText={setCurrentPasswordForEmail}
@@ -121,11 +132,13 @@ export default function SettingsScreen() {
         <Button title="Salvar Novo Email" onPress={handleUpdateEmail} />
       </View>
 
+      {/* CARD PARA ALTERAR SENHA */}
       <View style={styles.card}>
         <Text style={styles.title}>Alterar Senha</Text>
         <TextInput
           style={styles.input}
           placeholder="Senha Atual"
+          placeholderTextColor="#999"
           secureTextEntry
           value={currentPasswordForPwd}
           onChangeText={setCurrentPasswordForPwd}
@@ -133,6 +146,7 @@ export default function SettingsScreen() {
         <TextInput
           style={styles.input}
           placeholder="Nova Senha"
+          placeholderTextColor="#999"
           secureTextEntry
           value={newPassword}
           onChangeText={setNewPassword}
@@ -140,6 +154,7 @@ export default function SettingsScreen() {
         <TextInput
           style={styles.input}
           placeholder="Confirmar Nova Senha"
+          placeholderTextColor="#999"
           secureTextEntry
           value={confirmNewPassword}
           onChangeText={setConfirmNewPassword}
@@ -150,14 +165,15 @@ export default function SettingsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+// 5. Os estilos agora são uma FUNÇÃO que recebe as cores do tema
+const createStyles = (colors: typeof lightColors) => StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.background,
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.card,
     padding: 20,
     borderRadius: 8,
     marginBottom: 20,
@@ -171,13 +187,24 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 15,
+    color: colors.text,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: colors.inputBorder,
     padding: 12,
     borderRadius: 8,
     marginBottom: 15,
     fontSize: 16,
+    color: colors.text,
+  },
+  themeRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  themeLabel: {
+    fontSize: 16,
+    color: colors.text,
   },
 });

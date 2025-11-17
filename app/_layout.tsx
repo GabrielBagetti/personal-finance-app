@@ -5,8 +5,7 @@ import { CategoryProvider } from '../context/CategoryContext';
 import { useEffect } from 'react';
 import { ActivityIndicator, View, Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
-
-// import { InitialLayout } from './_layout.internal'; // 2. (Ver próximo arquivo)
+import { ThemeProvider } from '../context/ThemeContext'
 
 // 2. CONFIGURAÇÃO DO HANDLER (Como a notificação se comporta com o app aberto)
 Notifications.setNotificationHandler({
@@ -91,9 +90,9 @@ export default function RootLayout() {
     <AuthProvider>
       <TransactionProvider>
         <CategoryProvider>
-          {/* <ThemeProvider>  */}
-            <InitialLayout />
-          {/* </ThemeProvider> */}
+          <ThemeProvider>
+          <InitialLayout />
+          </ThemeProvider>
         </CategoryProvider>
       </TransactionProvider>
     </AuthProvider>
