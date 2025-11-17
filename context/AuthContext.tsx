@@ -9,7 +9,7 @@ interface User {
   profilePhotoUrl?: string;
 }
 
-const API_URL = 'http://192.154.1.5:3000'; 
+const API_URL = 'http://192.154.1.3:3000'; 
 const TOKEN_KEY = 'session_token';
 const USER_KEY = 'user_data';
 
@@ -97,7 +97,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(currentUser => {
       if (!currentUser) return null;
       const updatedUser = { ...currentUser, profilePhotoUrl: photoUrl };
-      // Salva o usuário atualizado no storage para persistência
       saveData(session!, updatedUser);
       return updatedUser;
     });

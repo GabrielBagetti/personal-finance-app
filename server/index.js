@@ -1,5 +1,3 @@
-// server/index.js - COMPLETO E COM UPLOAD DE FOTO
-
 const express = require('express');
 const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
@@ -27,7 +25,7 @@ const pool = new Pool({user: process.env.DB_USER || 'postgres',
 
 const JWT_SECRET = process.env.JWT_SECRET || 'seu-segredo';
 
-// --- CONFIGURAÇÃO DO UPLOAD (MULTER) ---
+// --- CONFIGURAÇÃO DO UPLOAD DA FOTO ---
 const UPLOAD_DIR = path.join(__dirname, 'uploads');
 fs.mkdir(UPLOAD_DIR, { recursive: true }).catch(console.error);
 
@@ -39,6 +37,7 @@ const storage = multer.diskStorage({
     cb(null, `${uniqueSuffix}${fileExtension}`);
   }
 });
+
 const upload = multer({ storage: storage, limits: { fileSize: 5 * 1024 * 1024 } }); // Limite de 5MB
 
 // Rota para servir as imagens salvas
@@ -56,7 +55,7 @@ const authenticateToken = (req, res, next) => {
 };
 
 
-// --- ROTAS DE AUTENTICAÇÃO ATUALIZADAS ---
+// --- ROTAS DE AUTENTICAÇÃO ---
 app.post('/register', async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -91,7 +90,7 @@ app.post('/login', async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password_hash);
         if (!isMatch) return res.status(401).json({ error: 'Credenciais inválidas.' });
 
-        // ATUALIZADO: Inclui a URL da foto no token
+        // INLUI A URL DA FOTO DE PERFIL NO TOKEN
         const tokenPayload = { 
             userId: user.id, 
             email: user.email, 

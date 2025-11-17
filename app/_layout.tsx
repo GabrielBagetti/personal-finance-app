@@ -1,23 +1,62 @@
-// app/_layout.tsx
-
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { AuthProvider, useAuth } from '../context/AuthContext';
 import { TransactionProvider } from '../context/TransactionContext';
 import { CategoryProvider } from '../context/CategoryContext';
 import { useEffect } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, View, Platform } from 'react-native';
+import * as Notifications from 'expo-notifications';
 
+// 2. CONFIGURAÇÃO DO HANDLER (Como a notificação se comporta com o app aberto)
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true, // Mostra o alerta visual
+    shouldPlaySound: true, // Toca som
+    shouldSetBadge: false,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+});
 
 const InitialLayout = () => {
   const { session, isLoading } = useAuth();
   const segments = useSegments();
   const router = useRouter();
 
+  // 3. PEDIR PERMISSÃO PARA NOTIFICAÇÕES AO INICIAR O APP
+  useEffect(() => {
+    async function registerForPushNotificationsAsync() {
+      if (Platform.OS === 'web') return;
+
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      
+      if (finalStatus !== 'granted') {
+        console.log('Permissão para notificações não foi concedida!');
+        return;
+      }
+
+      // Configuração específica para Android (Canais de Notificação)
+      if (Platform.OS === 'android') {
+        await Notifications.setNotificationChannelAsync('default', {
+          name: 'default',
+          importance: Notifications.AndroidImportance.MAX,
+          vibrationPattern: [0, 250, 250, 250],
+          lightColor: '#FF231F7C',
+        });
+      }
+    }
+
+    registerForPushNotificationsAsync();
+  }, []);
+
   useEffect(() => {
     if (isLoading) return;
-
     const inTabsGroup = segments[0] === '(tabs)';
-
     if (session && !inTabsGroup) {
       router.replace('/(tabs)');
     } else if (!session && inTabsGroup) {
@@ -36,24 +75,14 @@ const InitialLayout = () => {
   return (
     <Stack>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-
-      <Stack.Screen
-        name="add-transaction"
-        options={{ title: 'Adicionar Transação', presentation: 'modal' }}
-      />
-      <Stack.Screen
-        name="categories"
-        options={{ title: 'Gerenciar Categorias', presentation: 'modal' }}
-      />
-
-     
+      <Stack.Screen name="add-transaction" options={{ title: 'Adicionar Transação', presentation: 'modal' }} />
+      <Stack.Screen name="categories" options={{ title: 'Gerenciar Categorias', presentation: 'modal' }} />
       <Stack.Screen name="login" options={{ headerShown: false }} />
       <Stack.Screen name="register" options={{ headerShown: false }} />
     </Stack>
   );
-};
+}
 
-// Contextos globais
 export default function RootLayout() {
   return (
     <AuthProvider>
