@@ -10,7 +10,7 @@ interface User {
   role: string;
 }
 
-const API_URL = 'http://192.154.1.3:3000'; 
+const API_URL = 'http://192.168.0.103:3000'; 
 const TOKEN_KEY = 'session_token';
 const USER_KEY = 'user_data';
 

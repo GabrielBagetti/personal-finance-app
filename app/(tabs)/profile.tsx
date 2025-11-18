@@ -5,22 +5,20 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAuth, API_URL } from '../../context/AuthContext';
 import { useTransactions } from '../../context/TransactionContext';
 import { useCategories } from '../../context/CategoryContext';
-import { useTheme } from '../../context/ThemeContext'; // Importa o TEMA
-import { lightColors } from '../../constants/Colors'; // Importa o TIPO de cores
-import * as ImagePicker from 'expo-image-picker'; // Importa o UPLOAD de imagem
+import { useTheme } from '../../context/ThemeContext'; 
+import { lightColors } from '../../constants/Colors'; 
+import * as ImagePicker from 'expo-image-picker';
 
 export default function ProfileScreen() {
   const { user, signOut, session, updateUserProfilePhoto } = useAuth();
   const { clearTransactions } = useTransactions();
-  // const { clearCategories } = useCategories(); // Supondo que você tenha
-  const { colors } = useTheme(); // Pega as cores do TEMA
+  const { colors } = useTheme(); 
 
   // 1. CRIA OS ESTILOS DINÂMICOS
   const styles = useMemo(() => createStyles(colors), [colors]);
 
   const handleLogout = () => {
     clearTransactions();
-    // if (clearCategories) clearCategories();
     signOut();
   };
 
@@ -102,7 +100,7 @@ export default function ProfileScreen() {
     // 2. APLICA AS CORES DINÂMICAS
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        {/* 3. LÓGICA DA FOTO (NÃO MAIS O ÍCONE GENÉRICO) */}
+        {/* 3. LÓGICA DA FOTO*/}
         <TouchableOpacity onPress={handleProfilePhotoPress} style={styles.photoContainer}>
             {user?.profilePhotoUrl ? (
                 <Image source={{ uri: `${API_URL}${user.profilePhotoUrl}?key=${new Date().getTime()}` }} style={styles.profilePhoto} />
@@ -142,7 +140,6 @@ export default function ProfileScreen() {
   );
 }
 
-// 4. ESTILOS COMO FUNÇÃO (para o tema)
 const createStyles = (colors: typeof lightColors) => StyleSheet.create({
   safeArea: { 
     flex: 1, 
@@ -159,7 +156,7 @@ const createStyles = (colors: typeof lightColors) => StyleSheet.create({
     width: 120, 
     height: 120, 
     borderRadius: 60, 
-    backgroundColor: colors.card, // Cor dinâmica
+    backgroundColor: colors.card, 
     justifyContent: 'center', 
     alignItems: 'center', 
     marginBottom: 20, 
@@ -174,7 +171,7 @@ const createStyles = (colors: typeof lightColors) => StyleSheet.create({
     position: 'absolute', 
     bottom: 0, 
     right: 0, 
-    backgroundColor: colors.tint, // Cor dinâmica
+    backgroundColor: colors.tint, 
     borderRadius: 15, 
     padding: 5, 
     borderWidth: 2, 
@@ -185,7 +182,7 @@ const createStyles = (colors: typeof lightColors) => StyleSheet.create({
     fontWeight: 'bold', 
     marginTop: 10, 
     textTransform: 'capitalize', 
-    color: colors.text // Cor dinâmica
+    color: colors.text 
   },
   email: { 
     fontSize: 16, 
@@ -195,7 +192,7 @@ const createStyles = (colors: typeof lightColors) => StyleSheet.create({
   menuItem: { 
     flexDirection: 'row', 
     alignItems: 'center', 
-    backgroundColor: colors.card, // Cor dinâmica
+    backgroundColor: colors.card, 
     padding: 15, 
     borderRadius: 8, 
     width: '100%', 
@@ -205,6 +202,6 @@ const createStyles = (colors: typeof lightColors) => StyleSheet.create({
     flex: 1, 
     marginLeft: 15, 
     fontSize: 16, 
-    color: colors.text, // Cor dinâmica
+    color: colors.text, 
   },
 });
