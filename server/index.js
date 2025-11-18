@@ -54,7 +54,24 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
-
+const authorizeRole = (allowedRoles) => {
+    return (req, res, next) => {
+        // O req.user foi preenchido pelo middleware anterior (authenticateToken)
+        // Verificamos se o usuário existe e se a role dele está na lista permitida
+        console.log(">>> TENTATIVA DE ACESSO ADMIN <<<");
+        console.log("Quem está tentando:", req.user); 
+        console.log("Role do usuário:", req.user ? req.user.role : 'NÃO TEM USER');
+        console.log("Roles permitidas:", allowedRoles);
+        if (!req.user || !allowedRoles.includes(req.user.role)) {
+            console.log(">>> ACESSO NEGADO! <<<"); // Avisa no terminal se bloquear
+            return res.status(403).json({ 
+                error: "Acesso negado: Você não tem permissão para realizar esta ação." 
+            });
+        }
+        // Se passou, pode continuar
+        next();
+    };
+};
 // --- ROTAS DE AUTENTICAÇÃO ---
 app.post('/register', async (req, res) => {
   const { email, password } = req.body;
@@ -83,25 +100,56 @@ app.post('/register', async (req, res) => {
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     try {
+        // O SELECT * já traz a coluna 'role' que criamos no passo 1
         const userResult = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
-        if (userResult.rows.length === 0) return res.status(401).json({ error: 'Credenciais inválidas.' });
+        
+        if (userResult.rows.length === 0) {
+            return res.status(401).json({ error: 'Credenciais inválidas.' });
+        }
         
         const user = userResult.rows[0];
+        
         const isMatch = await bcrypt.compare(password, user.password_hash);
-        if (!isMatch) return res.status(401).json({ error: 'Credenciais inválidas.' });
+        if (!isMatch) {
+            return res.status(401).json({ error: 'Credenciais inválidas.' });
+        }
 
-        // INLUI A URL DA FOTO DE PERFIL NO TOKEN
+        // AQUI ESTÁ A MUDANÇA PRINCIPAL:
+        // Adicionamos o user.role no payload do token
         const tokenPayload = { 
             userId: user.id, 
             email: user.email, 
-            profilePhotoUrl: user.profile_photo_url 
+            profilePhotoUrl: user.profile_photo_url,
+            role: user.role  // <--- AGORA O TOKEN LEVA O PODER DO USUÁRIO
         };
+
+        // Gera o token assinado com o segredo
         const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '1h' });
 
-        res.json({ token, user: { id: user.id, email: user.email, profilePhotoUrl: user.profile_photo_url } });
+        res.json({ 
+            token, 
+            user: { 
+                id: user.id, 
+                email: user.email, 
+                profilePhotoUrl: user.profile_photo_url,
+                role: user.role // Devolvemos a role para o front-end saber também
+            } 
+        });
+
     } catch (err) {
         console.error("Erro no login:", err.message);
         res.status(500).json({ error: "Erro no servidor." });
+    }
+});
+
+app.get('/admin/users', authenticateToken, authorizeRole(['admin']), async (req, res) => {
+    try {
+        // Essa consulta pega todos os usuários do sistema (perigoso para usuários comuns verem)
+        const allUsers = await pool.query("SELECT id, email, role, profile_photo_url FROM users");
+        res.json(allUsers.rows);
+    } catch (err) {
+        console.error("Erro ao buscar usuários:", err.message);
+        res.status(500).json({ error: "Erro no servidor" });
     }
 });
 

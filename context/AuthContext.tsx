@@ -7,6 +7,7 @@ interface User {
   id: number;
   email: string;
   profilePhotoUrl?: string | null;
+  role: string;
 }
 
 const API_URL = 'http://192.154.1.3:3000'; 
@@ -118,23 +119,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setSession(null);
       setUser(null);
     },
-
-  updateUserEmail: async (newEmail: string) => {
+    updateUserEmail: async (newEmail: string) => {
       if (user && session) {
         const updatedUser = { ...user, email: newEmail };
         setUser(updatedUser);
-        await saveData(session, updatedUser); // Atualiza os dados salvos
+        await saveData(session, updatedUser);
       }
     },
-    updateUserProfilePhoto: (photoUrl: string | null ) => {
-    setUser(currentUser => {
-      if (!currentUser) return null;
-      const updatedUser = { ...currentUser, profilePhotoUrl: photoUrl };
-      saveData(session!, updatedUser);
-      return updatedUser;
-    });
-  },
-
+    updateUserProfilePhoto: (photoUrl: string | null) => {
+      setUser(currentUser => {
+        if (!currentUser) return null;
+        const updatedUser = { ...currentUser, profilePhotoUrl: photoUrl };
+        saveData(session!, updatedUser);
+        return updatedUser;
+      });
+    },
     session,
     user,
     isLoading,
