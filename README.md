@@ -63,7 +63,7 @@ npm test
 
 ## 📈 Diagrama de Classes
 
-<img src="assets/images/class-diagram.jpg" alt="Diagrama de classes">
+<img src="assets/images/class-diagram.png" alt="Diagrama de classes">
 <!--
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
