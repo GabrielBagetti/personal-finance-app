@@ -1,4 +1,4 @@
-# Bem-vindo ao SEU app de Finanças Pessoais! 
+![use-casesUPDT](https://github.com/user-attachments/assets/2cf543df-b2f4-4322-87d6-87b55b3f2d79)# Bem-vindo ao SEU app de Finanças Pessoais! 
 
 ## 📝 Descrição do Projeto
 
@@ -56,14 +56,14 @@ npm test
 
 ## 📈 Diagrama de Casos de Uso
 
-<img src="assets/images/casos-uso.jpg" alt="Diagrama de casos de uso">
+<img src="assets/images/use-casesUPDT.jpg" alt="Diagrama de casos de uso">
 
 
 ---
 
 ## 📈 Diagrama de Classes
 
-<img src="assets/images/class-diagram.jpg" alt="Diagrama de classes">
+<img src="assets/images/class-diagram.png" alt="Diagrama de classes">
 <!--
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 

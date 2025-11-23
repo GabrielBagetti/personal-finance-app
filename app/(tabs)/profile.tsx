@@ -12,15 +12,18 @@ import * as ImagePicker from 'expo-image-picker';
 export default function ProfileScreen() {
   const { user, signOut, session, updateUserProfilePhoto } = useAuth();
   const { clearTransactions } = useTransactions();
+<<<<<<< HEAD
   // const { clearCategories } = useCategories();
   const { colors } = useTheme();
 
+=======
+  const { colors } = useTheme(); 
+>>>>>>> 3cff43c5e5136859080dcae2f520bbfcdc22912b
 
   const styles = useMemo(() => createStyles(colors), [colors]);
 
   const handleLogout = () => {
     clearTransactions();
-    // if (clearCategories) clearCategories();
     signOut();
   };
 
@@ -103,7 +106,11 @@ export default function ProfileScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
+<<<<<<< HEAD
         {}
+=======
+        {/* 3. LÓGICA DA FOTO*/}
+>>>>>>> 3cff43c5e5136859080dcae2f520bbfcdc22912b
         <TouchableOpacity onPress={handleProfilePhotoPress} style={styles.photoContainer}>
             {user?.profilePhotoUrl ? (
                 <Image source={{ uri: `${API_URL}${user.profilePhotoUrl}?key=${new Date().getTime()}` }} style={styles.profilePhoto} />
@@ -159,7 +166,11 @@ const createStyles = (colors: typeof lightColors) => StyleSheet.create({
     width: 120, 
     height: 120, 
     borderRadius: 60, 
+<<<<<<< HEAD
     backgroundColor: colors.card,
+=======
+    backgroundColor: colors.card, 
+>>>>>>> 3cff43c5e5136859080dcae2f520bbfcdc22912b
     justifyContent: 'center', 
     alignItems: 'center', 
     marginBottom: 20, 
@@ -174,7 +185,11 @@ const createStyles = (colors: typeof lightColors) => StyleSheet.create({
     position: 'absolute', 
     bottom: 0, 
     right: 0, 
+<<<<<<< HEAD
     backgroundColor: colors.tint,
+=======
+    backgroundColor: colors.tint, 
+>>>>>>> 3cff43c5e5136859080dcae2f520bbfcdc22912b
     borderRadius: 15, 
     padding: 5, 
     borderWidth: 2, 
@@ -185,7 +200,11 @@ const createStyles = (colors: typeof lightColors) => StyleSheet.create({
     fontWeight: 'bold', 
     marginTop: 10, 
     textTransform: 'capitalize', 
+<<<<<<< HEAD
     color: colors.text
+=======
+    color: colors.text 
+>>>>>>> 3cff43c5e5136859080dcae2f520bbfcdc22912b
   },
   email: { 
     fontSize: 16, 
@@ -195,7 +214,11 @@ const createStyles = (colors: typeof lightColors) => StyleSheet.create({
   menuItem: { 
     flexDirection: 'row', 
     alignItems: 'center', 
+<<<<<<< HEAD
     backgroundColor: colors.card,
+=======
+    backgroundColor: colors.card, 
+>>>>>>> 3cff43c5e5136859080dcae2f520bbfcdc22912b
     padding: 15, 
     borderRadius: 8, 
     width: '100%', 
@@ -205,6 +228,10 @@ const createStyles = (colors: typeof lightColors) => StyleSheet.create({
     flex: 1, 
     marginLeft: 15, 
     fontSize: 16, 
+<<<<<<< HEAD
     color: colors.text,
+=======
+    color: colors.text, 
+>>>>>>> 3cff43c5e5136859080dcae2f520bbfcdc22912b
   },
 });

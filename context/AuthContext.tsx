@@ -9,8 +9,13 @@ interface User {
   profilePhotoUrl?: string | null;
   role: string;
 }
+<<<<<<< HEAD
 const API_URL = 'http://10.57.52.250:3000';
 // const API_URL = 'https://salma-kidneylike-digna.ngrok-free.dev';
+=======
+
+const API_URL = 'http://192.168.0.103:3000'; 
+>>>>>>> 3cff43c5e5136859080dcae2f520bbfcdc22912b
 const TOKEN_KEY = 'session_token';
 const USER_KEY = 'user_data';
 

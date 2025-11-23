@@ -5,7 +5,11 @@ import { useTransactions } from '../../context/TransactionContext';
 import { useAuth, API_URL } from '../../context/AuthContext'; 
 import { useTheme } from '../../context/ThemeContext';
 import { lightColors } from '../../constants/Colors';
+<<<<<<< HEAD
 import { Ionicons } from '@expo/vector-icons';
+=======
+import { Ionicons } from '@expo/vector-icons'; 
+>>>>>>> 3cff43c5e5136859080dcae2f520bbfcdc22912b
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -104,7 +108,11 @@ export default function HomeScreen() {
         />
       )}
 
+<<<<<<< HEAD
       {}
+=======
+      {/* --- BOTÃO FLUTUANTE DE ADMIN --- */}
+>>>>>>> 3cff43c5e5136859080dcae2f520bbfcdc22912b
       {user?.role === 'admin' && (
         <TouchableOpacity 
           style={styles.adminFloatingButton} 
@@ -241,16 +249,28 @@ const createStyles = (colors: typeof lightColors) => StyleSheet.create({
       color: 'gray' 
     },
 
+<<<<<<< HEAD
+=======
+    
+>>>>>>> 3cff43c5e5136859080dcae2f520bbfcdc22912b
     adminFloatingButton: {
         position: 'absolute',
         left: 0,
         top: '50%',
+<<<<<<< HEAD
         backgroundColor: '#FF453A',
+=======
+        backgroundColor: '#FF453A', 
+>>>>>>> 3cff43c5e5136859080dcae2f520bbfcdc22912b
         padding: 12,
         borderTopRightRadius: 12,
         borderBottomRightRadius: 12,
         elevation: 8,
+<<<<<<< HEAD
         zIndex: 999,
+=======
+        zIndex: 999, 
+>>>>>>> 3cff43c5e5136859080dcae2f520bbfcdc22912b
         shadowColor: "#000",
         shadowOffset: { width: 2, height: 2 },
         shadowOpacity: 0.3,

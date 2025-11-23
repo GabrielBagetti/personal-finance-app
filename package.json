@@ -11,17 +11,22 @@
     "lint": "expo lint"
   },
   "dependencies": {
-    "@expo/vector-icons": "^15.0.2",
+    "@expo/vector-icons": "^15.0.3",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-native-picker/picker": "2.11.1",
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
     "@react-navigation/native": "^7.1.6",
     "@react-navigation/stack": "^7.4.8",
+<<<<<<< HEAD
     "expo": "~54.0.24",
+=======
+    "@types/react": "~19.0.10",
+    "expo": "^54.0.25",
+>>>>>>> 3cff43c5e5136859080dcae2f520bbfcdc22912b
     "expo-blur": "~15.0.7",
-    "expo-constants": "~18.0.8",
-    "expo-file-system": "~19.0.17",
+    "expo-constants": "~18.0.10",
+    "expo-file-system": "~19.0.19",
     "expo-font": "~14.0.8",
     "expo-haptics": "~15.0.7",
     "expo-image": "~3.0.10",
@@ -51,6 +56,10 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+<<<<<<< HEAD
+=======
+    "@types/react": "~19.1.10",
+>>>>>>> 3cff43c5e5136859080dcae2f520bbfcdc22912b
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",
     "typescript": "~5.9.2"
