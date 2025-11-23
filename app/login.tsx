@@ -2,17 +2,17 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { useAuth, API_URL } from '../context/AuthContext';
-import { useTheme } from '../context/ThemeContext'; // 1. Importar o Tema
-import { lightColors } from '../constants/Colors'; // Importar o tipo
+import { useTheme } from '../context/ThemeContext';
+import { lightColors } from '../constants/Colors';
 
 export default function LoginScreen() {
   const [emailInput, setEmailInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { signIn } = useAuth();
-  const { colors } = useTheme(); // 2. Pegar as cores
+  const { colors } = useTheme();
 
-  // 3. Criar os estilos dinâmicos
+
   const styles = useMemo(() => createStyles(colors), [colors]);
 
   const handleLogin = async () => {
@@ -37,7 +37,6 @@ export default function LoginScreen() {
   };
 
   return (
-    // 4. Aplicar os estilos dinâmicos
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
       <TextInput 
@@ -69,26 +68,25 @@ export default function LoginScreen() {
   );
 }
 
-// 5. Transformar os estilos em uma função que recebe as cores
 const createStyles = (colors: typeof lightColors) => StyleSheet.create({
   container: { 
     flex: 1, 
     justifyContent: 'center', 
     padding: 20,
-    backgroundColor: colors.background // Cor dinâmica
+    backgroundColor: colors.background
   },
   title: { 
     fontSize: 24, 
     fontWeight: 'bold', 
     textAlign: 'center', 
     marginBottom: 20,
-    color: colors.text // Cor dinâmica
+    color: colors.text
   },
   input: { 
     borderWidth: 1, 
-    borderColor: colors.inputBorder, // Cor dinâmica
-    backgroundColor: colors.card, // Cor dinâmica
-    color: colors.text, // Cor dinâmica
+    borderColor: colors.inputBorder,
+    backgroundColor: colors.card,
+    color: colors.text,
     padding: 12, 
     borderRadius: 8, 
     marginBottom: 15 
@@ -96,6 +94,6 @@ const createStyles = (colors: typeof lightColors) => StyleSheet.create({
   link: { 
     marginTop: 15, 
     textAlign: 'center', 
-    color: colors.tint // Cor dinâmica
+    color: colors.tint
   },
 });

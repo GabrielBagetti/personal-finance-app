@@ -76,18 +76,18 @@ export const TransactionProvider = ({ children }: { children: ReactNode }) => {
 
           if (Platform.OS !== 'web') {
             
-            // 1. Determina o sinal e um título mais claro
+
             const isReceita = newTransactionData.type === 'receita';
             const sign = isReceita ? '+' : '-';
             const title = isReceita ? "Nova Receita Registrada! 💸" : "Nova Despesa Registrada! 💳";
             
-            // 2. Formata o corpo da notificação com o sinal
+            // Formata o corpo da notificação com o sinal
             const body = `${newTransactionData.description}: ${sign} R$ ${newTransactionData.amount.toFixed(2)}`;
 
             await Notifications.scheduleNotificationAsync({
               content: {
-                title: title, // Título atualizado
-                body: body,   // Corpo atualizado
+                title: title,
+                body: body,
                 sound: true,
               },
               trigger: null,

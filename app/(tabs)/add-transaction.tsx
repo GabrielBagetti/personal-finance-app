@@ -4,15 +4,14 @@ import { useRouter } from 'expo-router';
 import { useTransactions } from '../../context/TransactionContext';
 import { Picker } from '@react-native-picker/picker';
 import { useCategories } from '../../context/CategoryContext'; 
-import { useTheme } from '../../context/ThemeContext'; // 1. Importar o Tema
-import { lightColors } from '../../constants/Colors'; // Importar o tipo
+import { useTheme } from '../../context/ThemeContext';
+import { lightColors } from '../../constants/Colors';
 
 export default function AddTransactionScreen() {
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const router = useRouter();
   const { addTransaction } = useTransactions();
-  // 2. Pega as categorias e o estado de carregamento do CategoryContext
   const { categories, isLoading: isLoadingCategories } = useCategories(); 
 
   const [description, setDescription] = useState('');

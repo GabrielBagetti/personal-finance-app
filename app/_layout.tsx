@@ -7,11 +7,11 @@ import { ActivityIndicator, View, Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import { ThemeProvider } from '../context/ThemeContext'
 
-// 2. CONFIGURAÇÃO DO HANDLER (Como a notificação se comporta com o app aberto)
+//CONFIGURAÇÃO DO HANDLER (Como a notificação se comporta com o app aberto)
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true, // Mostra o alerta visual
-    shouldPlaySound: true, // Toca som
+    shouldShowAlert: true, 
+    shouldPlaySound: true,
     shouldSetBadge: false,
     shouldShowBanner: true,
     shouldShowList: true,
@@ -23,7 +23,7 @@ const InitialLayout = () => {
   const segments = useSegments();
   const router = useRouter();
 
-  // 3. PEDIR PERMISSÃO PARA NOTIFICAÇÕES AO INICIAR O APP
+
   useEffect(() => {
     async function registerForPushNotificationsAsync() {
       if (Platform.OS === 'web') return;
@@ -41,7 +41,6 @@ const InitialLayout = () => {
         return;
       }
 
-      // Configuração específica para Android (Canais de Notificação)
       if (Platform.OS === 'android') {
         await Notifications.setNotificationChannelAsync('default', {
           name: 'default',

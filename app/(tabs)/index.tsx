@@ -2,10 +2,10 @@ import React, { useMemo, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Pressable, ActivityIndicator, Modal, TouchableOpacity, Alert } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { useTransactions } from '../../context/TransactionContext';
-import { useAuth, API_URL } from '../../context/AuthContext'; // Certifique-se que API_URL é exportado aqui
+import { useAuth, API_URL } from '../../context/AuthContext'; 
 import { useTheme } from '../../context/ThemeContext';
 import { lightColors } from '../../constants/Colors';
-import { Ionicons } from '@expo/vector-icons'; // Ícone para o botão
+import { Ionicons } from '@expo/vector-icons';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -18,10 +18,10 @@ export default function HomeScreen() {
   const [usersList, setUsersList] = useState<any[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
 
-  // Criar os estilos dinâmicos
+
   const styles = useMemo(() => createStyles(colors), [colors]);
 
-  // Calcula o saldo total
+
   const balance = useMemo(() => {
     return transactions.reduce((acc, tx) => {
       return tx.type === 'receita' ? acc + Number(tx.amount) : acc - Number(tx.amount);
@@ -64,7 +64,7 @@ export default function HomeScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.greeting}>Olá, {user?.email.split('@')[0] || 'Usuário'}!</Text>
-        {/* Mostra a Role apenas para confirmação visual (opcional) */}
+        {}
         {user?.role === 'admin' && <Text style={{color: 'red', fontSize: 10, fontWeight: 'bold'}}>ADMINISTRADOR</Text>}
       </View>
 
@@ -104,7 +104,7 @@ export default function HomeScreen() {
         />
       )}
 
-      {/* --- BOTÃO FLUTUANTE DE ADMIN (SÓ APARECE SE FOR ADMIN) --- */}
+      {}
       {user?.role === 'admin' && (
         <TouchableOpacity 
           style={styles.adminFloatingButton} 
@@ -119,7 +119,7 @@ export default function HomeScreen() {
         </TouchableOpacity>
       )}
 
-      {/* --- MODAL DA LISTA DE USUÁRIOS --- */}
+      {}
       <Modal visible={adminModalVisible} animationType="slide" transparent={true}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
@@ -155,7 +155,7 @@ export default function HomeScreen() {
   );
 }
 
-// 5. Estilos atualizados
+
 const createStyles = (colors: typeof lightColors) => StyleSheet.create({
     container: { 
       flex: 1, 
@@ -241,17 +241,16 @@ const createStyles = (colors: typeof lightColors) => StyleSheet.create({
       color: 'gray' 
     },
 
-    // --- ESTILOS NOVOS DO ADMIN ---
     adminFloatingButton: {
         position: 'absolute',
         left: 0,
         top: '50%',
-        backgroundColor: '#FF453A', // Vermelho Apple
+        backgroundColor: '#FF453A',
         padding: 12,
         borderTopRightRadius: 12,
         borderBottomRightRadius: 12,
         elevation: 8,
-        zIndex: 999, // Fica em cima de tudo
+        zIndex: 999,
         shadowColor: "#000",
         shadowOffset: { width: 2, height: 2 },
         shadowOpacity: 0.3,

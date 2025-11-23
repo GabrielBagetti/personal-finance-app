@@ -17,12 +17,13 @@ import {
 } from 'react-native';
 import { useCategories, Category } from '../../context/CategoryContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useTheme } from '../../context/ThemeContext'; // 1. Importar o Tema
-import { lightColors } from '../../constants/Colors'; // Importar o tipo
+import { useTheme } from '../../context/ThemeContext';
+import { lightColors } from '../../constants/Colors';
 
 export default function CategoriesScreen() {
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
+  
   const { categories, isLoading, addCategory, updateCategory, deleteCategory } = useCategories();
 
   const [modalVisible, setModalVisible] = useState(false);

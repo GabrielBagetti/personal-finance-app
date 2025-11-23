@@ -1,8 +1,8 @@
 import React, {useMemo} from 'react';
 import { View, Text, SectionList, StyleSheet, SafeAreaView, ActivityIndicator } from 'react-native';
 import { useTransactions, Transaction } from '../../context/TransactionContext';
-import { useTheme } from '../../context/ThemeContext'; // 1. Importar o Tema
-import { lightColors } from '../../constants/Colors'; // Importar o tipo de cores
+import { useTheme } from '../../context/ThemeContext';
+import { lightColors } from '../../constants/Colors';
 
 
 

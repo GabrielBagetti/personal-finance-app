@@ -3,26 +3,25 @@ import { View, Text, TextInput, Button, StyleSheet, Alert, ScrollView, Switch, P
 import { useAuth, API_URL } from '../../context/AuthContext';
 import { useRouter } from 'expo-router';
 import * as Notifications from 'expo-notifications';
-import { useTheme } from '../../context/ThemeContext'; // 1. Importa o hook de TEMA
-import { lightColors } from '../../constants/Colors'; // Importa o tipo de cores
+import { useTheme } from '../../context/ThemeContext';
+import { lightColors } from '../../constants/Colors';
 
 export default function SettingsScreen() {
   const { session, updateUserEmail, signOut } = useAuth();
-  const { theme, toggleTheme, colors } = useTheme(); // 2. Pega o tema, a função e as cores
+  const { theme, toggleTheme, colors } = useTheme();
   const router = useRouter();
 
-  // Estados dos formulários
+
   const [currentPasswordForEmail, setCurrentPasswordForEmail] = useState('');
   const [newEmail, setNewEmail] = useState('');
   const [currentPasswordForPwd, setCurrentPasswordForPwd] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
 
-  // 3. Cria os estilos dinâmicos
-  // Usamos useMemo para evitar que os estilos sejam recalculados a cada renderização
+
  const styles = useMemo(() => createStyles(colors), [colors]);
 
-  // Função para disparar a notificação "toast"
+  // Função para disparar a notificação
   const showSuccessToast = (title: string, body: string) => {
     if (Platform.OS === 'web') {
       alert(`${title}\n${body}`);
@@ -92,10 +91,10 @@ export default function SettingsScreen() {
   };
 
   return (
-    // 4. Aplica os estilos dinâmicos no container principal
+
     <ScrollView style={styles.container}>
       
-      {/* CARD PARA O TEMA */}
+      {}
       <View style={styles.card}>
         <Text style={styles.title}>Aparência</Text>
         <View style={styles.themeRow}>
@@ -109,7 +108,7 @@ export default function SettingsScreen() {
         </View>
       </View>
 
-      {/* CARD PARA ALTERAR EMAIL */}
+      {}
       <View style={styles.card}>
         <Text style={styles.title}>Alterar Email</Text>
         <TextInput
@@ -132,7 +131,7 @@ export default function SettingsScreen() {
         <Button title="Salvar Novo Email" onPress={handleUpdateEmail} />
       </View>
 
-      {/* CARD PARA ALTERAR SENHA */}
+      {}
       <View style={styles.card}>
         <Text style={styles.title}>Alterar Senha</Text>
         <TextInput
@@ -165,7 +164,6 @@ export default function SettingsScreen() {
   );
 }
 
-// 5. Os estilos agora são uma FUNÇÃO que recebe as cores do tema
 const createStyles = (colors: typeof lightColors) => StyleSheet.create({
   container: {
     flex: 1,

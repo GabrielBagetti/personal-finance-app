@@ -1,4 +1,3 @@
-// context/ThemeContext.tsx
 
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -10,7 +9,7 @@ const THEME_KEY = 'user_theme';
 
 interface ThemeContextType {
   theme: Theme;
-  colors: typeof lightColors; // Fornece o objeto de cores correto
+  colors: typeof lightColors;
   toggleTheme: () => void;
   isLoading: boolean;
 }
@@ -18,11 +17,11 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const systemTheme = useColorScheme() || 'light'; // Pega o tema do celular (light/dark)
+  const systemTheme = useColorScheme() || 'light'; 
   const [theme, setTheme] = useState<Theme>(systemTheme);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Carrega o tema salvo pelo usuário
+ 
   useEffect(() => {
     const loadTheme = async () => {
       try {
@@ -30,7 +29,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
         if (savedTheme) {
           setTheme(savedTheme);
         } else {
-          setTheme(systemTheme); // Se não salvou, usa o do sistema
+          setTheme(systemTheme); 
         }
       } catch (e) {
         console.error("Erro ao carregar o tema:", e);
@@ -54,7 +53,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const colors = theme === 'light' ? lightColors : darkColors;
 
   if (isLoading) {
-    return null; // Ou uma tela de loading
+    return null;
   }
 
   return (

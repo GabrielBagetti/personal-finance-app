@@ -1,21 +1,19 @@
 import { Tabs } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useTheme } from '../../context/ThemeContext'; // 1. IMPORTE O TEMA
+import { useTheme } from '../../context/ThemeContext';
 import { Pressable } from 'react-native';
 import { useAuth } from '../../context/AuthContext';
 import { useTransactions } from '../../context/TransactionContext';
 
 export default function TabsLayout() {
-  const { colors } = useTheme(); // 2. PEGUE AS CORES DO TEMA
+  const { colors } = useTheme(); 
 
-  // Pega as funções de logout para o botão na tela de perfil
+  
   const { signOut } = useAuth();
   const { clearTransactions } = useTransactions();
-  // const { clearCategories } = useCategories(); // Se você tiver
 
   const handleLogout = () => {
     clearTransactions();
-    // if (clearCategories) clearCategories();
     signOut();
   };
 
@@ -26,13 +24,13 @@ export default function TabsLayout() {
         tabBarActiveTintColor: colors.tint,
         tabBarInactiveTintColor: 'gray',
         tabBarStyle: {
-          backgroundColor: colors.card, // Cor de fundo do "footer"
-          borderTopColor: colors.cardBorder, // Cor da borda do "footer"
+          backgroundColor: colors.card,
+          borderTopColor: colors.cardBorder,
         },
         headerStyle: {
-          backgroundColor: colors.card, // Cor de fundo do "header"
+          backgroundColor: colors.card,
         },
-        headerTintColor: colors.text, // Cor do título do "header"
+        headerTintColor: colors.text,
       }}
     >
       <Tabs.Screen
@@ -70,7 +68,6 @@ export default function TabsLayout() {
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="account-circle" size={size} color={color} />
           ),
-          // Adiciona o botão de Sair no cabeçalho da tela de perfil
           headerRight: () => (
             <Pressable onPress={handleLogout} style={{ marginRight: 15 }}>
               <MaterialCommunityIcons name="logout" size={24} color={colors.error} />

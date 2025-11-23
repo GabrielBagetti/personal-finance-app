@@ -2,17 +2,17 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, SafeAreaView, ActivityIndicator } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { API_URL } from '../context/AuthContext';
-import { useTheme } from '../context/ThemeContext'; // 1. Importar o Tema
-import { lightColors } from '../constants/Colors'; // Importar o tipo
+import { useTheme } from '../context/ThemeContext';
+import { lightColors } from '../constants/Colors';
 
 export default function RegisterScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { colors } = useTheme(); // 2. Pegar as cores
+  const { colors } = useTheme();
 
-  // 3. Criar os estilos dinâmicos
+
   const styles = useMemo(() => createStyles(colors), [colors]);
 
   const handleRegister = async () => {
@@ -39,7 +39,6 @@ export default function RegisterScreen() {
   };
 
   return (
-    // 4. Aplicar os estilos dinâmicos
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <Text style={styles.title}>Criar Conta</Text>
@@ -73,7 +72,6 @@ export default function RegisterScreen() {
   );
 }
 
-// 5. Estilos dinâmicos (idênticos aos do login)
 const createStyles = (colors: typeof lightColors) => StyleSheet.create({
   safeArea: {
     flex: 1,

@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 require('dotenv').config();
 
-// Novas importações para arquivos
+
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs/promises');
@@ -56,22 +56,20 @@ const authenticateToken = (req, res, next) => {
 
 const authorizeRole = (allowedRoles) => {
     return (req, res, next) => {
-        // O req.user foi preenchido pelo middleware anterior (authenticateToken)
-        // Verificamos se o usuário existe e se a role dele está na lista permitida
         console.log(">>> TENTATIVA DE ACESSO ADMIN <<<");
         console.log("Quem está tentando:", req.user); 
         console.log("Role do usuário:", req.user ? req.user.role : 'NÃO TEM USER');
         console.log("Roles permitidas:", allowedRoles);
         if (!req.user || !allowedRoles.includes(req.user.role)) {
-            console.log(">>> ACESSO NEGADO! <<<"); // Avisa no terminal se bloquear
+            console.log(">>> ACESSO NEGADO! <<<"); 
             return res.status(403).json({ 
                 error: "Acesso negado: Você não tem permissão para realizar esta ação." 
             });
         }
-        // Se passou, pode continuar
         next();
     };
 };
+
 // --- ROTAS DE AUTENTICAÇÃO ---
 app.post('/register', async (req, res) => {
   const { email, password } = req.body;
@@ -100,7 +98,6 @@ app.post('/register', async (req, res) => {
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     try {
-        // O SELECT * já traz a coluna 'role' que criamos no passo 1
         const userResult = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
         
         if (userResult.rows.length === 0) {
@@ -114,13 +111,11 @@ app.post('/login', async (req, res) => {
             return res.status(401).json({ error: 'Credenciais inválidas.' });
         }
 
-        // AQUI ESTÁ A MUDANÇA PRINCIPAL:
-        // Adicionamos o user.role no payload do token
         const tokenPayload = { 
             userId: user.id, 
             email: user.email, 
             profilePhotoUrl: user.profile_photo_url,
-            role: user.role  // <--- AGORA O TOKEN LEVA O PODER DO USUÁRIO
+            role: user.role
         };
 
         // Gera o token assinado com o segredo
@@ -132,7 +127,7 @@ app.post('/login', async (req, res) => {
                 id: user.id, 
                 email: user.email, 
                 profilePhotoUrl: user.profile_photo_url,
-                role: user.role // Devolvemos a role para o front-end saber também
+                role: user.role
             } 
         });
 
@@ -144,7 +139,6 @@ app.post('/login', async (req, res) => {
 
 app.get('/admin/users', authenticateToken, authorizeRole(['admin']), async (req, res) => {
     try {
-        // Essa consulta pega todos os usuários do sistema (perigoso para usuários comuns verem)
         const allUsers = await pool.query("SELECT id, email, role, profile_photo_url FROM users");
         res.json(allUsers.rows);
     } catch (err) {
@@ -181,6 +175,7 @@ app.post('/transactions', authenticateToken, async (req, res) => {
     }
 });
 
+
 // ROTA PARA APAGAR TRANSAÇÃO
 app.delete('/transactions/:id', authenticateToken, async (req, res) => {
     try {
@@ -198,6 +193,7 @@ app.delete('/transactions/:id', authenticateToken, async (req, res) => {
         res.status(500).json({ error: "Erro no servidor" });
     }
 });
+
 
 // ROTA PARA BUSCAR CATEGORIAS (COM CRIAÇÃO DE PADRÕES)
 app.get('/categories', authenticateToken, async (req, res) => {
@@ -226,6 +222,7 @@ app.get('/categories', authenticateToken, async (req, res) => {
     }
 });
 
+
 // ADICIONAR UMA NOVA CATEGORIA
 app.post('/categories', authenticateToken, async (req, res) => {
     const { name, type } = req.body;
@@ -249,6 +246,7 @@ app.post('/categories', authenticateToken, async (req, res) => {
         res.status(500).json({ error: "Erro no servidor." });
     }
 });
+
 
 // EDITAR O NOME DE UMA CATEGORIA
 app.put('/categories/:id', authenticateToken, async (req, res) => {
@@ -278,6 +276,7 @@ app.put('/categories/:id', authenticateToken, async (req, res) => {
     }
 });
 
+
 // APAGAR UMA CATEGORIA
 app.delete('/categories/:id', authenticateToken, async (req, res) => {
     const { id } = req.params;
@@ -301,6 +300,7 @@ app.delete('/categories/:id', authenticateToken, async (req, res) => {
     }
 });
 
+
 // --- NOVA ROTA PARA UPLOAD DE FOTO DE PERFIL ---
 app.post('/upload-profile-photo', authenticateToken, upload.single('profilePhoto'), async (req, res) => {
     if (!req.file) return res.status(400).json({ error: 'Nenhum arquivo de imagem foi enviado.' });
@@ -309,14 +309,12 @@ app.post('/upload-profile-photo', authenticateToken, upload.single('profilePhoto
     const photoPath = `/uploads/${req.file.filename}`;
 
     try {
-        // Pega o caminho da foto antiga para poder apagar depois
         const oldPhotoResult = await pool.query("SELECT profile_photo_url FROM users WHERE id = $1", [userId]);
         const oldPhotoPath = oldPhotoResult.rows[0]?.profile_photo_url;
 
-        // Atualiza o caminho da foto no banco de dados
         const updateResult = await pool.query("UPDATE users SET profile_photo_url = $1 WHERE id = $2 RETURNING profile_photo_url", [photoPath, userId]);
 
-        // Se havia uma foto antiga, tenta apagar o arquivo do servidor
+
         if (oldPhotoPath) {
             const absoluteOldPhotoPath = path.join(__dirname, oldPhotoPath);
             fs.unlink(absoluteOldPhotoPath).catch(err => console.warn(`Não foi possível remover a foto antiga: ${err.message}`));
@@ -329,17 +327,18 @@ app.post('/upload-profile-photo', authenticateToken, upload.single('profilePhoto
     }
 });
 
+//ROTA PARA REMOVER FOTO DE PERFIL
 app.delete('/remove-profile-photo', authenticateToken, async (req, res) => {
     const userId = req.user.userId;
     try {
-        // 1. Acha a foto antiga para apagar o arquivo
+
         const oldPhotoResult = await pool.query("SELECT profile_photo_url FROM users WHERE id = $1", [userId]);
         const oldPhotoPath = oldPhotoResult.rows[0]?.profile_photo_url;
 
-        // 2. Define a URL da foto como NULL no banco de dados
+
         await pool.query("UPDATE users SET profile_photo_url = NULL WHERE id = $1", [userId]);
 
-        // 3. Se a foto antiga existia, apaga o arquivo do servidor
+
         if (oldPhotoPath) {
             const absoluteOldPhotoPath = path.join(__dirname, oldPhotoPath);
             fs.unlink(absoluteOldPhotoPath).catch(err => console.warn(`Não foi possível remover a foto antiga: ${err.message}`));
@@ -352,7 +351,7 @@ app.delete('/remove-profile-photo', authenticateToken, async (req, res) => {
     }
 });
 
-
+//ROTA PARA ATUALIZAR EMAIL
 app.put('/update-email', authenticateToken, async (req, res) => {
     const { newEmail, currentPassword } = req.body;
     const userId = req.user.userId;
@@ -361,7 +360,6 @@ app.put('/update-email', authenticateToken, async (req, res) => {
         return res.status(400).json({ error: "Email novo e senha atual são obrigatórios." });
     }
     try {
-        // 1. Verificar a senha atual
         const userResult = await pool.query("SELECT * FROM users WHERE id = $1", [userId]);
         const user = userResult.rows[0];
         const isMatch = await bcrypt.compare(currentPassword, user.password_hash);
@@ -369,14 +367,13 @@ app.put('/update-email', authenticateToken, async (req, res) => {
             return res.status(401).json({ error: "Senha atual incorreta." });
         }
 
-        // 2. Se a senha estiver correta, atualizar o email
+
         const updateResult = await pool.query(
             "UPDATE users SET email = $1 WHERE id = $2 RETURNING id, email",
             [newEmail, userId]
         );
         res.json(updateResult.rows[0]);
     } catch (err) {
-        // 23505 é o código de violação de constraint "UNIQUE"
         if (err.code === '23505') {
             return res.status(409).json({ error: "Este email já está em uso por outra conta." });
         }
@@ -384,6 +381,7 @@ app.put('/update-email', authenticateToken, async (req, res) => {
         res.status(500).json({ error: "Erro no servidor." });
     }
 });
+
 
 // ROTA PARA ALTERAR A SENHA
 app.put('/update-password', authenticateToken, async (req, res) => {
@@ -394,7 +392,6 @@ app.put('/update-password', authenticateToken, async (req, res) => {
         return res.status(400).json({ error: "Todos os campos são obrigatórios." });
     }
     try {
-        // 1. Verificar a senha atual
         const userResult = await pool.query("SELECT * FROM users WHERE id = $1", [userId]);
         const user = userResult.rows[0];
         const isMatch = await bcrypt.compare(currentPassword, user.password_hash);
@@ -402,11 +399,10 @@ app.put('/update-password', authenticateToken, async (req, res) => {
             return res.status(401).json({ error: "Senha atual incorreta." });
         }
 
-        // 2. Se a senha estiver correta, criar o hash da nova senha
         const salt = await bcrypt.genSalt(10);
         const newPasswordHash = await bcrypt.hash(newPassword, salt);
 
-        // 3. Atualizar no banco
+
         await pool.query(
             "UPDATE users SET password_hash = $1 WHERE id = $2",
             [newPasswordHash, userId]

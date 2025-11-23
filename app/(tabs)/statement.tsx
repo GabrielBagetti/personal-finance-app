@@ -98,12 +98,12 @@ export default function StatementScreen() {
 const createStyles = (colors: typeof lightColors) => StyleSheet.create({
     safeArea: {
       flex: 1,
-      backgroundColor: colors.background // Cor dinâmica
+      backgroundColor: colors.background
     },
     container: { 
       flex: 1, 
       padding: 16, 
-      backgroundColor: colors.background // Cor dinâmica
+      backgroundColor: colors.background
     },
     header: { 
       marginBottom: 16 
@@ -111,11 +111,11 @@ const createStyles = (colors: typeof lightColors) => StyleSheet.create({
     greeting: { 
       fontSize: 22, 
       fontWeight: 'bold', 
-      color: colors.text // Cor dinâmica
+      color: colors.text
     },
     balanceCard: { 
       padding: 20, 
-      backgroundColor: colors.card, // Cor dinâmica
+      backgroundColor: colors.card,
       borderRadius: 12, 
       alignItems: 'center', 
       marginBottom: 20, 
@@ -141,7 +141,7 @@ const createStyles = (colors: typeof lightColors) => StyleSheet.create({
       fontWeight: 'bold', 
       marginTop: 24, 
       marginBottom: 10, 
-      color: colors.text // Cor dinâmica
+      color: colors.text
     },
     txItem: { 
       flexDirection: 'row', 
@@ -149,15 +149,15 @@ const createStyles = (colors: typeof lightColors) => StyleSheet.create({
       alignItems: 'center', 
       padding: 15, 
       borderBottomWidth: 1, 
-      borderBottomColor: colors.cardBorder, // Cor dinâmica
-      backgroundColor: colors.card, // Cor dinâmica
+      borderBottomColor: colors.cardBorder,
+      backgroundColor: colors.card,
       borderRadius: 8, 
       marginBottom: 8 
     },
     txDescription: { 
       fontSize: 16, 
       fontWeight: '500',
-      color: colors.text // Cor dinâmica
+      color: colors.text
     },
     txCategory: { 
       fontSize: 12, 
@@ -168,11 +168,11 @@ const createStyles = (colors: typeof lightColors) => StyleSheet.create({
     },
     txAmountIncome: {
       fontWeight: 'bold',
-      color: '#2ecc71', // Green for income
+      color: '#2ecc71',
     },
     txAmountExpense: {
       fontWeight: 'bold',
-      color: '#e74c3c', // Red for expense
+      color: '#e74c3c',
     },
     txDetails: {
       flex: 1,
@@ -185,13 +185,13 @@ const createStyles = (colors: typeof lightColors) => StyleSheet.create({
       gap: 8
     },
     button: { 
-      backgroundColor: colors.tint, // Cor dinâmica
+      backgroundColor: colors.tint,
       padding: 15, 
       borderRadius: 8, 
       alignItems: 'center' 
     },
     buttonText: { 
-      color: '#fff', // Texto do botão principal geralmente fica branco
+      color: '#fff',
       fontSize: 16, 
       fontWeight: 'bold' 
     },
