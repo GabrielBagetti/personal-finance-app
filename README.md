@@ -1,4 +1,4 @@
-![use-casesUPDT](https://github.com/user-attachments/assets/2cf543df-b2f4-4322-87d6-87b55b3f2d79)# Bem-vindo ao SEU app de Finanças Pessoais! 
+# Bem-vindo ao SEU app de Finanças Pessoais! 
 
 ## 📝 Descrição do Projeto
 
