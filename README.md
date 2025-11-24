@@ -56,8 +56,7 @@ npm test
 
 ## 📈 Diagrama de Casos de Uso
 
-![Use Cases](https://raw.githubusercontent.com/GabrielBagetti/personal-finance-app/main/assets/images/use-casesUPDT.jpg)
-
+<img src="assets/images/use-casesUPDT.jpg" alt="Diagrama de casos de uso">
 
 ---
 
