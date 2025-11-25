@@ -1,4 +1,5 @@
 # Bem-vindo ao SEU app de Finanças Pessoais! 
+# Feito por Gabriel Campos, Gabriel Couto e Vitória Jamile Freitas
 
 ## 📝 Descrição do Projeto
 
